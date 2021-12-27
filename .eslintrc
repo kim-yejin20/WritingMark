@@ -9,8 +9,10 @@
     ],
     
     "parserOptions": {
-      "ecmaVersion": 7,
-      "sourceType": "script",
+      // "ecmaVersion": 7,
+      "ecmaVersion": 11,
+      "sourceType": "module",
+      // "sourceType": "script", //Parsing error: 'import' and 'export' may only appear at the top level 때문에 수정
 
       "ecmaFeatures": {
         "jsx": false
