@@ -6,10 +6,19 @@ dotenv.config();
 
 require('dotenv').config();
 
-app.listen(process.env.PORT, (err) => {
-  if (!err) {
-    console.log(`Server is running on ${process.enc.PORT}`);
-  } else {
-    console.log('Server error : ', err);
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected');
+    app.listen(process.env.PORT, () =>
+      console.log(`Server is running on ${process.env.PORT}`)
+    );
+  } catch (err) {
+    console.log('Failed to connect MongoDB', err);
   }
-});
+};
+
+connectDB();

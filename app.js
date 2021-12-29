@@ -1,13 +1,10 @@
 // [LOAD PACKAGES]
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
-import router from './routes';
+import router from './src/routes';
 
 const app = express();
 
-// [CONFIGURE APP TO USE bodyParser]
-// app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 var corsOptions = {
@@ -16,7 +13,7 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
-//app.use(cors());
+// app.use(cors());
 app.use(router);
 
 app.all('*', (req, res, next) => {
