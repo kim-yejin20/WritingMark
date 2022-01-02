@@ -6,7 +6,7 @@ const router = express.Router();
 
 // router.post('/register', userController.register); //회원가입
 
-router.get('/register', 미들웨어자리, userController.register);
+router.post('/register', 미들웨어자리, userController.register);
 
 //원래 여기 미들웨어가 어떻게 있어야하냐면
 
