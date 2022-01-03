@@ -7,4 +7,24 @@ const checkUserEmail = async (email) => {
   return await User.findOne({ email });
 };
 
-export default { checkUserEmail };
+const checkUserNickname = async (nickname) => {
+  console.log('userDAO에 checkusernickname');
+  return await User.findOne({ nickname });
+};
+
+// const enterUserNickname = async (nickname) => {
+//   console.log('userDAO에 enterusernickname');
+//   return await User.
+// };
+
+const createUser = async (reqData) => {
+  console.log('userDAO- createuser에 왔음');
+  const result = await new User({
+    nickname: reqData.nickname,
+    email: reqData.email,
+    password: reqData.password,
+  }).save();
+  return result;
+};
+
+export default { checkUserEmail, checkUserNickname, createUser };
