@@ -7,13 +7,13 @@ const app = express();
 
 app.use(express.json());
 
-var corsOptions = {
-  origin: `http://localhost:8080`,
-  credentials: true,
-};
+// var corsOptions = {
+//   origin: `http://localhost:8080`,
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
-// app.use(cors());
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(router);
 
 app.all('*', (req, res, next) => {

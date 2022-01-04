@@ -33,15 +33,19 @@ import { userService } from '../services'; //서비스 만들기
 const register = async (req, res) => {
   try {
     console.log('userController-register');
+    console.log(req.body);
+    console.log('만 뽑아볼까:', req.body.email);
     if (req.body.email == '' || req.body.password == '') {
       throw new Error('Please enter the input.');
     }
+
     const result = await userService.register(req.body);
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       result,
     });
   } catch (err) {
+    // next(err);
     res.status(400).json({
       status: 'fail',
       message: err.message,
