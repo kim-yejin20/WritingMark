@@ -7,22 +7,26 @@ const userSchema = new Schema({
     type: String,
     index: true,
     unique: true,
-    maxlength: [7, 'Nickname must be 7 characters or less.'],
+    // maxlength: [7, 'Nickname must be 7 characters or less.'],
+    maxlength: 7,
   },
   email: {
     type: String,
     unique: true,
-    required: [true, 'Please enter email'],
-    match: [
-      /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
-      'Please fill a valid email address',
-    ],
+    // required: [true, 'Please enter email'],
+    required: true,
+    // match: [
+    //   /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+    //   'Please fill a valid email address',
+    // ],
     set: toLower,
   },
   password: {
     type: String,
-    required: [true, 'Please enter password'],
-    minlength: [7, 'Password must be at least 7 characters'],
+    // required: [true, 'Please enter password'],
+    required: true,
+    // minlength: [7, 'Password must be at least 7 characters'],
+    minlength: 7,
   },
   social_id: {
     type: String,
@@ -34,12 +38,13 @@ const userSchema = new Schema({
   },
   isBasicImage: {
     type: Boolean,
+    defalt: true,
   },
   userImage: {
     type: String,
   },
   createdAt: {
-    type: Date,
+    type: String,
   },
 });
 

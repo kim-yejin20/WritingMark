@@ -1,13 +1,12 @@
 import express from 'express';
+import { registerValidator } from '../../middlewares/validation';
 import { userController } from '../controllers'; // userController 완성하면 여기에 임포트
 // import middlewares from //여기에 미들웨어넣기
 
 const router = express.Router();
 
-// router.post('/register', userController.register); //회원가입
-
-router.post('/register', 미들웨어자리, userController.register);
-
+router.post('/register', [registerValidator], userController.register); //회원가입
+router.post('/login', userController.login);
 //원래 여기 미들웨어가 어떻게 있어야하냐면
 
 // router.post('/register', 미들웨어자리, function (요청, 응답) {

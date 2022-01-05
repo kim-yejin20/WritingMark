@@ -1,8 +1,7 @@
-// import moment from 'moment';
-// import tz from 'moment-timezone';
+import moment from 'moment';
 
 // moment.tz.setDefault('Asia/Seoul');
 
-// const date = moment().format.apply('YYYY-MM-DD HH:mm:ss');
+const localTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
-// export default { date };
+export default { localTime };

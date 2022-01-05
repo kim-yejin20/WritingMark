@@ -16,20 +16,8 @@ const makeRandomNickname = () =>
   new Promise((resolve, reject) => {
     crypto.randomBytes(2, (err, buf) => {
       if (err) reject(err);
-      console.log('랜덤닉네임만들겠습니다!');
       const result = resolve('익명' + buf.toString('hex'));
     });
   });
-
-// function makeRandomNickname() {
-//   console.log('여기 유틸임');
-//   const result = 'hi' + crypto.randomBytes(2).toString('hex');
-//   console.log(result);
-//   return result;
-//   // console.log('여기 유틸임');
-//   // const randomName = 'hi' + crypto.randomBytes(2).toString('hex');
-//   // return result;
-//   // return result;
-// }
 
 export default { makeRandomNickname };
