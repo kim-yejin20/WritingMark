@@ -17,6 +17,11 @@ const checkUserNickname = async (nickname) => {
   return result;
 };
 
+const checkUserId = async (_id) => {
+  const result = await userDAO.checkUserId(_id);
+  return result;
+};
+
 const register = async (reqData) => {
   try {
     const result = await userDAO.createUser(reqData);
@@ -46,5 +51,6 @@ const checkUserAccount = async (reqData) => {
 export default {
   checkUserEmail,
   checkUserNickname,
+  checkUserId,
   register,
 };

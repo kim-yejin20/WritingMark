@@ -8,7 +8,7 @@ const validate = (req, res, next) => {
   return res.status(400).json({ message: errors.array()[0].msg });
 };
 
-export const registerValidator = [
+export const registerLoginValidator = [
   check('email')
     .not()
     .isEmpty()

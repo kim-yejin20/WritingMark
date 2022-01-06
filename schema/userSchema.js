@@ -31,6 +31,9 @@ const userSchema = new Schema({
   social_id: {
     type: String,
   },
+  social_platform: {
+    type: String,
+  },
   role: {
     type: String,
     enum: ['admin', 'user'],

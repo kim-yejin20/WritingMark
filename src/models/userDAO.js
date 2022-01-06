@@ -9,6 +9,10 @@ const checkUserNickname = async (nickname) => {
   return await User.findOne({ nickname });
 };
 
+const checkUserId = async (id) => {
+  return await User.findOne({ id }, 'nickname role isBasicImage');
+};
+
 const createUser = async (reqData) => {
   const result = await new User({
     nickname: reqData.nickname,
@@ -20,4 +24,4 @@ const createUser = async (reqData) => {
   return result;
 };
 
-export default { checkUserEmail, checkUserNickname, createUser };
+export default { checkUserEmail, checkUserNickname, checkUserId, createUser };

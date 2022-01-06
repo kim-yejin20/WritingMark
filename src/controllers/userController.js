@@ -46,7 +46,6 @@ const register = async (req, res) => {
     if (nicknameResult !== null) errorGenerator('닉네임 중복', 409);
     const emailResult = await userService.checkUserEmail(req.body.email);
     if (emailResult !== null) errorGenerator('이메일 중복', 409);
-    // 비밀번호 암호화 필요
     const hashPassword = await bcrypt.encryptPassword(req.body.password, 10);
     req.body.password = hashPassword;
     const result = await userService.register(req.body);
@@ -79,15 +78,27 @@ const login = async (req, res) => {
     });
     // const result = await userService.checkUserAccount(req.body);
   } catch (err) {
-    res.status(400).json({
+    res.status(err.statusCode).json({
       status: 'fail',
       message: err.message,
     });
-    // res.status(err.statusCode).json({
-    //   status: 'fail',
-    //   message: err.message,
-    // });
   }
 };
 
-export default { register, login };
+const userInfomation = async (req, res) => {
+  try {
+    const userinfo = await userService.checkUserId(req.user);
+    console.log(userinfo.nickname);
+    res.status(200).json({
+      status: 'success',
+      userinfo,
+    });
+  } catch (err) {
+    res.status(err.statusCode).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+export default { register, login, userInfomation };
