@@ -72,17 +72,21 @@ const login = async (req, res) => {
     );
     if (!userEmail || !isValidUser)
       errorGenerator('이메일 혹은 비밀번호가 다릅니다', 401);
-    const token = await jwt.issueToken(userEmail._id);
+    const token = await jwt.signToken(userEmail._id);
     res.status(200).json({
       status: 'success',
       token: token,
     });
     // const result = await userService.checkUserAccount(req.body);
   } catch (err) {
-    res.status(err.statusCode).json({
+    res.status(400).json({
       status: 'fail',
       message: err.message,
     });
+    // res.status(err.statusCode).json({
+    //   status: 'fail',
+    //   message: err.message,
+    // });
   }
 };
 
