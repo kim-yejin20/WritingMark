@@ -10,7 +10,7 @@ const checkUserNickname = async (nickname) => {
 };
 
 const checkUserId = async (id) => {
-  return await User.findOne({ id }, 'nickname role isBasicImage');
+  return await User.findOne({ id }, 'nickname email role isBasicImage');
 };
 
 const createUser = async (reqData) => {

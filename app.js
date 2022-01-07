@@ -2,6 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import router from './src/routes';
+import morgan from 'morgan';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 // app.use(cors(corsOptions));
 app.use(cors());
 app.use(router);
+app.use(morgan('dev'));
 
 app.all('*', (req, res, next) => {
   next(new Error('Page not found'));
