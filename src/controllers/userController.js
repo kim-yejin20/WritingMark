@@ -35,6 +35,7 @@ import jwt from '../utils/jwt';
 
 const register = async (req, res) => {
   try {
+    if (!req.body.nickname) errorGenerator('회원가입시 닉네임 키 필수', 400);
     if (req.body.nickname == '') {
       console.log('닉네임이 없습니다. 랜덤 생성하겠습니다.');
       const randomName = await crypto.makeRandomNickname();
@@ -64,7 +65,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const userEmail = await userService.checkUserEmail(req.body.email);
-    console.log(userEmail.password);
     const isValidUser = await bcrypt.comparePassword(
       req.body.password,
       userEmail.password
@@ -72,13 +72,14 @@ const login = async (req, res) => {
     if (!userEmail || !isValidUser)
       errorGenerator('이메일 혹은 비밀번호가 다릅니다', 401);
     const token = await jwt.signToken(userEmail._id);
+    console.log('id가뭐길래', userEmail.id);
     res.status(200).json({
       status: 'success',
       token: token,
     });
     // const result = await userService.checkUserAccount(req.body);
   } catch (err) {
-    res.status(err.statusCode).json({
+    res.status(400).json({
       status: 'fail',
       message: err.message,
     });
@@ -88,13 +89,12 @@ const login = async (req, res) => {
 const userInfomation = async (req, res) => {
   try {
     const userinfo = await userService.checkUserId(req.user);
-    console.log(userinfo.nickname);
     res.status(200).json({
       status: 'success',
       userinfo,
     });
   } catch (err) {
-    res.status(err.statusCode).json({
+    res.status(400).json({
       status: 'fail',
       message: err.message,
     });

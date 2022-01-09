@@ -1,5 +1,13 @@
 import User from '../../schema/userSchema';
+import mongoose from 'mongoose';
 import moment from '../utils/moment';
+
+// const ObjectId = mongoose.Types.ObjectId;
+
+// String.prototype.toObjectId = function () {
+//   var ObjectId = mongoose.Types.ObjectId;
+//   return new ObjectId(this.toString());
+// };
 
 const checkUserEmail = async (email) => {
   return await User.findOne({ email });
@@ -10,7 +18,7 @@ const checkUserNickname = async (nickname) => {
 };
 
 const checkUserId = async (id) => {
-  return await User.findOne({ id }, 'nickname email role isBasicImage');
+  return await User.findOne({ _id: id });
 };
 
 const createUser = async (reqData) => {

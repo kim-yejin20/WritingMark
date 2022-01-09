@@ -9,7 +9,7 @@ dotenv.config();
 const JWT_SECRETKEY = process.env.JWT_SECRETKEY;
 
 const signToken = (id) => {
-  return jwt.sign({ id: id }, JWT_SECRETKEY, {
+  return jwt.sign({ _id: id.toString() }, JWT_SECRETKEY, {
     expiresIn: '7d',
     issuer: 'writingmark',
   });

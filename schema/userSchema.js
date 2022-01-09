@@ -3,10 +3,12 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  // _id: mongoose.SchemaType.ObjectId,
   nickname: {
     type: String,
     index: true,
     unique: true,
+    required: true,
     maxlength: [7, 'Nickname must be 7 characters or less.'],
   },
   email: {
@@ -49,4 +51,11 @@ function toLower(email) {
 
 // module.exports = User;
 
-module.exports = mongoose.model('User', userSchema);
+// module.exports = mongoose.model('User', userSchema); //원래쓰던거
+
+const User = mongoose.model('User', userSchema);
+
+const doc = new User();
+doc._id instanceof mongoose.Types.ObjectId;
+
+export default User;

@@ -1,18 +1,23 @@
 import multer from 'multer';
-import multers3 from 'multer-s3';
+import multerS3 from 'multer-s3';
 import aws from 'aws-sdk';
-import s3 from '../src/utils';
+import { s3 } from '../src/utils/aws';
 
-const storage = multers3({
-  s3: s3,
-  bucket: '버켓이름',
+const storage = multerS3({
+  s3,
+  bucket: 'writingmark',
   key: (req, file, cb) => {
-    cb(null, Date.now() + '.' + file.originalname.split('.').pop());
+    if (file.fieldname == 'info_image') {
+      cb(null, `post/${Date.now()}.${file.originalname.split('.').pop()}`);
+    }
+    if (file.fieldname == 'user_profile') {
+      cb(null, `user/${Date.now()}.${file.originalname.split('.').pop()}`);
+    }
   },
 });
 
-const upload = multer({
-  multers3,
+export const upload = multer({
+  storage,
   fileFilter: (req, file, cb) => {
     if (['image/jpeg', 'image/png'].includes(file.mimetype)) cb(null, true);
     else cb(new Error('invalid file type'), false);
@@ -21,3 +26,5 @@ const upload = multer({
     fileSize: 1024 * 1024 * 5,
   },
 });
+
+// export default { upload };
