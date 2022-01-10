@@ -1,10 +1,6 @@
 import jwt from '../src/utils/jwt';
-// import dotenv from 'dotenv';
 import { errorGenerator } from '../src/utils';
 import { userDAO } from '../src/models';
-// import jwt from 'jsonwebtoken';
-
-// dotenv.config();
 
 export const validateToken = async (req, res, next) => {
   try {

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   postId: {
     type: Number,
-    default: 0,
+    // default: 1,
   },
   writer: {
     type: mongoose.Types.ObjectId,
@@ -21,8 +21,7 @@ const postSchema = new Schema({
     required: true,
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: String,
   },
   info_title: {
     type: String,
@@ -30,8 +29,14 @@ const postSchema = new Schema({
   info_url: {
     type: String,
   },
-  info_image: {
-    type: String,
+
+  image: {
+    info_image: {
+      type: String,
+    },
+    originalImageName: {
+      type: String,
+    },
   },
   count: {
     like: {
@@ -47,4 +52,4 @@ const postSchema = new Schema({
 
 const Post = mongoose.model('Post', postSchema);
 
-export { Post };
+export default Post;

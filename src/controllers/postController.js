@@ -1,31 +1,20 @@
 import { postDAO } from '../models';
 import { postService } from '../services';
+import { errorGenerator } from '../utils';
 
 const createPost = async (req, res) => {
   try {
-    if (req.user == null) {
-      res.status(400).json({
-        status: 'fail',
-        message: '게시글 작성 권한없음',
-      });
-    }
-    console.log('유저:', req.user);
-    console.log('파일:', req.file);
-    console.log('오리지널파일:', req.file.originalname);
-    console.log('controll!');
-    const test = req.file.originalname;
-    console.log(test);
+    if (req.user == null) errorGenerator('로그인후 가능합니다', 403);
+    const user = req.user;
+    const data = req.body;
+    const file = req.file;
+
+    const result = await postService.createNewPost(user, data, file);
     res.status(200).json({
       status: 'success',
-      test,
+      result,
     });
   } catch (err) {
-    // if (!statusCode) {
-    //   res.status(400).josn({
-    //     status: 'fail',
-    //     message: err.message,
-    //   });
-    // }
     res.status(400).json({
       status: 'fail',
       message: err.message,

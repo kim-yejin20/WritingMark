@@ -18,7 +18,7 @@ const checkUserNickname = async (nickname) => {
 };
 
 const checkUserId = async (id) => {
-  return await User.findOne({ _id: id });
+  return await User.findOne({ _id: id }, '_id nickname role');
 };
 
 const createUser = async (reqData) => {

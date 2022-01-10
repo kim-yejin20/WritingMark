@@ -1,6 +1,8 @@
-import postDAO from '../models';
-import postService from '../services';
+import { postDAO } from '../models';
 
-const hi = 1;
+const createNewPost = async (user, data, file) => {
+  const result = await postDAO.createPost(user, data, file);
+  return result;
+};
 
-export default { hi };
+export default { createNewPost };

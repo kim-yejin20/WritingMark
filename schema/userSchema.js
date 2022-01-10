@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  // _id: mongoose.SchemaType.ObjectId,
   nickname: {
     type: String,
     index: true,
@@ -55,7 +54,7 @@ function toLower(email) {
 
 const User = mongoose.model('User', userSchema);
 
-const doc = new User();
-doc._id instanceof mongoose.Types.ObjectId;
+// const doc = new User();
+// doc._id instanceof mongoose.Types.ObjectId;
 
 export default User;
