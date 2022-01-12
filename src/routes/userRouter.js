@@ -5,7 +5,12 @@ import { userController } from '../controllers';
 
 const router = express.Router();
 
-router.post('/register', [registerLoginValidator], userController.register); //회원가입
+router.post(
+  '/register',
+  validateToken,
+  [registerLoginValidator],
+  userController.register
+); //회원가입
 router.post('/login', [registerLoginValidator], userController.login);
 router.get('/info', validateToken, userController.userInfomation);
 

@@ -10,7 +10,7 @@ import moment from '../utils/moment';
 // };
 
 const checkUserEmail = async (email) => {
-  return await User.findOne({ email });
+  return await User.findOne({ email: email });
 };
 
 const checkUserNickname = async (nickname) => {
