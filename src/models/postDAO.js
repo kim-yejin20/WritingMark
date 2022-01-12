@@ -42,4 +42,8 @@ const createPostWithImg = async (user, data, file) => {
   return result;
 };
 
-export default { createPost, createPostWithImg };
+const findPostNew = async (tab) => {
+  const result = await Post.find({}).sort({ postId: -1 });
+  return result;
+};
+export default { createPost, createPostWithImg, findPostNew };

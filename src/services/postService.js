@@ -9,4 +9,10 @@ const createNewPostWithImg = async (user, data, file) => {
   const result = await postDAO.createPostWithImg(user, data, file);
   return result;
 };
-export default { createNewPost, createNewPostWithImg };
+
+const findPostsTab = async (tab) => {
+  const result = await postDAO.findPostNew(tab);
+  return result;
+};
+
+export default { createNewPost, createNewPostWithImg, findPostsTab };

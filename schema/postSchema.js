@@ -18,7 +18,7 @@ const postSchema = new Schema({
   },
   content: {
     type: String,
-    required: true,
+    required: [true, 'content는 필수입니다.'],
   },
   createdAt: {
     type: String,

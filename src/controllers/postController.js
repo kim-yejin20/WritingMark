@@ -7,16 +7,19 @@ const createPost = async (req, res) => {
     const user = req.user;
     const data = req.body;
     const file = req.file;
-    let result = {};
     if (req.user == null) errorGenerator('로그인후 가능합니다', 403);
-    if (file == undefined) {
-      result = await postService.createNewPost(user, data);
-    }
     if (file !== undefined) {
-      result = await postService.createNewPostWithImg(user, data, file);
+      const result = await postService.createNewPostWithImg(user, data, file);
+      return res.status(201).json({
+        status: 'success',
+        user: user,
+        result,
+      });
     }
-    res.status(200).json({
+    const result = await postService.createNewPost(user, data);
+    res.status(201).json({
       status: 'success',
+      user: user,
       result,
     });
   } catch (err) {
@@ -27,4 +30,23 @@ const createPost = async (req, res) => {
   }
 };
 
-export default { createPost };
+const findPostTab = async (req, res) => {
+  try {
+    console.log('req.query.tab이름은' + req.query.tab + '이다');
+    const tab = req.query.tab;
+    const result = await postService.findPostsTab(tab);
+
+    res.status(200).json({
+      status: 'success',
+      user: req.user,
+      result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+export default { createPost, findPostTab };

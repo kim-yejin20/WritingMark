@@ -12,4 +12,6 @@ router.post(
   postController.createPost
 );
 
+router.get('', validateToken, postController.findPostTab);
+
 export default router;
