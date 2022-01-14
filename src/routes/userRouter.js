@@ -5,14 +5,18 @@ import { userController } from '../controllers';
 
 const router = express.Router();
 
-router.post(
-  '/register',
-  validateToken,
-  [registerLoginValidator],
-  userController.register
-); //회원가입
+router.get('', validateToken, userController.user);
+router.post('/register', [registerLoginValidator], userController.register); //회원가입
 router.post('/login', [registerLoginValidator], userController.login);
-router.get('/info', validateToken, userController.userInfomation);
+// router.get('/info', validateToken, userController.userInfo);
+router.get('/info/edit', validateToken, userController.userInfo);
+router.get('/posts', validateToken, userController.readUserWritten);
+router.post('/bookmark/:postId', validateToken, userController.userBookmark);
+router.get(
+  '/bookmarks/test',
+  validateToken,
+  userController.findUserBookmarkTest
+);
 
 //원래 여기 미들웨어가 어떻게 있어야하냐면
 // router.post('/register', 미들웨어자리, function (요청, 응답) {

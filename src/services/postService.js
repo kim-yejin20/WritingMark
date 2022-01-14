@@ -11,8 +11,15 @@ const createNewPostWithImg = async (user, data, file) => {
 };
 
 const findPostsTab = async (tab) => {
-  const result = await postDAO.findPostNew(tab);
-  return result;
+  console.log('tab은?', tab);
+  if (tab == 'new') {
+    return await postDAO.findPostNew();
+  } else if (tab == 'hot') {
+    return await postDAO.findPostHot();
+  }
+
+  // const result = await postDAO.findPostNew(tab);
+  // return result;
 };
 
 export default { createNewPost, createNewPostWithImg, findPostsTab };

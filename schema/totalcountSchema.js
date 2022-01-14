@@ -1,4 +1,4 @@
-import mongoose, { SchemaType } from 'mongoose';
+import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
@@ -16,6 +16,7 @@ const totalCountSchema = new Schema({
 
 const TotalCount = mongoose.model('TotalCount', totalCountSchema);
 
+// 문서 생성
 // const doc = new TotalCount({
 //   id: 'UNIQUE COUNT DOCUMENT IDENTIFIER',
 // }).save();

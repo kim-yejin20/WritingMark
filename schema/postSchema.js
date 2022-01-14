@@ -39,7 +39,7 @@ const postSchema = new Schema({
     },
   },
   count: {
-    like: {
+    bookmark: {
       type: Number,
       default: 0,
     },
@@ -48,6 +48,12 @@ const postSchema = new Schema({
       default: 0,
     },
   },
+  userBookmark: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 const Post = mongoose.model('Post', postSchema);

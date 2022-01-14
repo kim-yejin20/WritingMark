@@ -12,14 +12,12 @@ const createPost = async (req, res) => {
       const result = await postService.createNewPostWithImg(user, data, file);
       return res.status(201).json({
         status: 'success',
-        user: user,
         result,
       });
     }
     const result = await postService.createNewPost(user, data);
     res.status(201).json({
       status: 'success',
-      user: user,
       result,
     });
   } catch (err) {
@@ -34,11 +32,12 @@ const findPostTab = async (req, res) => {
   try {
     console.log('req.query.tab이름은' + req.query.tab + '이다');
     const tab = req.query.tab;
+
+    if (tab == undefined) errorGenerator('잘못된 접근입니다', 400);
     const result = await postService.findPostsTab(tab);
 
     res.status(200).json({
       status: 'success',
-      user: req.user,
       result,
     });
   } catch (err) {

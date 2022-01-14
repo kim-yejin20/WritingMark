@@ -3,14 +3,14 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const bookmarkSchema = new Schema({
-  post_id: {
-    type: mongoose.Schema.type.ObjectId,
+  postId: {
+    type: mongoose.Types.ObjectId,
     ref: 'Post',
     required: true,
     index: true,
   },
-  user_id: {
-    type: mongoose.Schema.type.ObjectId,
+  userId: {
+    type: mongoose.Types.ObjectId,
     ref: 'User',
     required: true,
     index: true,
@@ -19,4 +19,4 @@ const bookmarkSchema = new Schema({
 
 const Bookmark = mongoose.model('Bookmark', bookmarkSchema);
 
-export { Bookmark };
+export default Bookmark;

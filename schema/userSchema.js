@@ -38,6 +38,12 @@ const userSchema = new Schema({
   createdAt: {
     type: String,
   },
+  // bookmarkPost: [
+  //   {
+  //     type: mongoose.Types.ObjectId,
+  //     ref: 'Post',
+  //   },
+  // ],
 });
 
 function toLower(email) {

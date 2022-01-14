@@ -42,8 +42,17 @@ const createPostWithImg = async (user, data, file) => {
   return result;
 };
 
-const findPostNew = async (tab) => {
-  const result = await Post.find({}).sort({ postId: -1 });
+const findPostNew = async () => {
+  const result = await Post.find({})
+    .populate('writer', 'nickname profileImage')
+    .sort({ postId: -1 });
   return result;
 };
-export default { createPost, createPostWithImg, findPostNew };
+
+const findPostHot = async () => {
+  const result = await Post.find({})
+    .populate('writer', 'nickname profileImage')
+    .sort({ 'count.bookmark': -1 });
+  return result;
+};
+export default { createPost, createPostWithImg, findPostNew, findPostHot };
