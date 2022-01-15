@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   postId: {
     type: Number,
-    // default: 1,
   },
   writer: {
     type: mongoose.Types.ObjectId,
@@ -39,6 +38,7 @@ const postSchema = new Schema({
     },
   },
   count: {
+    // type: Number,
     bookmark: {
       type: Number,
       default: 0,

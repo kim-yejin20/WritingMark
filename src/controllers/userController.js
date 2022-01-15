@@ -102,13 +102,14 @@ const readUserWritten = async (req, res) => {
   }
 };
 
-const userBookmark = async (req, res) => {
+const createUserBookmark = async (req, res) => {
   try {
     const postId = req.params.postId;
     console.log(postId);
     console.log('북마크에옴');
     if (req.user == null) errorGenerator('로그인 후 가능합니다', 403);
-    const result = await userService.userBookmark(req.user, postId);
+    const result = await userService.createUserBookmark(req.user, postId);
+    console.log(result);
     res.status(200).json({
       status: 'success',
       result,
@@ -144,6 +145,6 @@ export default {
   login,
   userInfo,
   readUserWritten,
-  userBookmark,
+  createUserBookmark,
   findUserBookmarkTest,
 };

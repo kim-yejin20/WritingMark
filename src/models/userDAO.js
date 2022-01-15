@@ -4,13 +4,6 @@ import moment from '../utils/moment';
 import Post from '../../schema/postSchema';
 import Bookmark from '../../schema/bookmarkSchema';
 
-// const ObjectId = mongoose.Types.ObjectId;
-
-// String.prototype.toObjectId = function () {
-//   var ObjectId = mongoose.Types.ObjectId;
-//   return new ObjectId(this.toString());
-// };
-
 const checkUserEmail = async (email) => {
   return await User.findOne({ email: email });
 };
@@ -45,53 +38,28 @@ const findUserWritten = async (user) => {
 };
 
 const createUserBookmark = async (userId, postId) => {
-  // const post_id = await Post.findOne({ postId: postId });
-  // console.log('post_id?', post_id);
   const result = await Post.findOneAndUpdate(
     { postId: postId },
-    { $push: { userBookmark: { _id: userId._id } } },
+    {
+      $push: { userBookmark: { _id: userId._id } },
+      $inc: { 'count.bookmark': 1 },
+    },
     { new: true }
   );
-  console.log('result', result);
   const newBookmark = await new Bookmark({
     postId: result._id,
     userId: userId._id,
-  });
-  console.log('newBookmark?', newBookmark);
-
-  //post문서에 북마크에도 카운트 추가해야함!!!!!!!!!!!!!
-
-  // array에 _id추가하는거
-  // const result = await User.findOneAndUpdate(
-  //   { _id: userId },
-  //   {
-  //     $push: {
-  //       bookmarkPost: { _id: post_id._id },
-  //     },
-  //   }
-  // );
+  }).save(); //.save()가 있어야 저장됨. 꼭 넣어주기
 
   return result;
 };
 
 const findUserBookmarkTest = async (user) => {
-  // const result = await Bookmark.exists({ userId: user }); //true만 하나 나옴
-  const post = await Post.find({})
-    .populate('writer', 'nickname profileImage')
-    .sort({ postId: -1 });
-  console.log('post의 첫번째 객체는??', post[0]);
-  console.log('user._id는?', user._id);
-
-  const test = await User.findById(user._id);
-  const result = await User.findById(user._id).populate({
-    path: 'bookmarkPost',
-    populate: { path: 'writer', select: 'nickname' },
+  const result = await Bookmark.find({ userId: user._id }).populate({
+    path: 'postId',
+    populate: { path: 'writer', select: 'nickname profileImage' },
   });
-
-  // const result = await Bookmark.find(post[0]._id).exists(user._id);
-  // console.log('post의 한 객체는?', post)
-  // const bookmarkt_result = await post.exists({ userId: user });
-  return test;
+  return result;
 };
 
 export default {

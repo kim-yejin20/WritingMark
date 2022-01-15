@@ -16,7 +16,7 @@ app.use(express.urlencoded({ limit: '50mb' }));
 // };
 
 // app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors()); //모든 라우터에 cors()적용
 app.use(router);
 app.use(morgan('dev'));
 

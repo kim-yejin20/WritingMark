@@ -11,7 +11,11 @@ router.post('/login', [registerLoginValidator], userController.login);
 // router.get('/info', validateToken, userController.userInfo);
 router.get('/info/edit', validateToken, userController.userInfo);
 router.get('/posts', validateToken, userController.readUserWritten);
-router.post('/bookmark/:postId', validateToken, userController.userBookmark);
+router.post(
+  '/bookmark/:postId',
+  validateToken,
+  userController.createUserBookmark
+);
 router.get(
   '/bookmarks/test',
   validateToken,

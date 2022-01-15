@@ -33,7 +33,7 @@ const checkUserWritten = async (user) => {
   }
 };
 
-const userBookmark = async (userId, postId) => {
+const createUserBookmark = async (userId, postId) => {
   try {
     const result = await userDAO.createUserBookmark(userId, postId);
     return result;
@@ -57,6 +57,6 @@ export default {
   checkUserinfo,
   register,
   checkUserWritten,
-  userBookmark,
+  createUserBookmark,
   findUserBookmarkTest,
 };
