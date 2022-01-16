@@ -10,17 +10,19 @@ router.post('/register', [registerLoginValidator], userController.register); //�
 router.post('/login', [registerLoginValidator], userController.login);
 // router.get('/info', validateToken, userController.userInfo);
 router.get('/info/edit', validateToken, userController.userInfo);
-router.get('/posts', validateToken, userController.readUserWritten);
+router.get('/posts', validateToken, userController.findUserPost);
 router.post(
   '/bookmark/:postId',
   validateToken,
   userController.createUserBookmark
 );
-router.get(
-  '/bookmarks/test',
+
+router.delete(
+  '/bookmark/:postId',
   validateToken,
-  userController.findUserBookmarkTest
+  userController.removeUserBookmark
 );
+router.get('/bookmarks', validateToken, userController.findUserBookmark);
 
 //원래 여기 미들웨어가 어떻게 있어야하냐면
 // router.post('/register', 미들웨어자리, function (요청, 응답) {

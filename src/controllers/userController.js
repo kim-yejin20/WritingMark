@@ -87,9 +87,12 @@ const userInfo = async (req, res) => {
   }
 };
 
-const readUserWritten = async (req, res) => {
+const findUserPost = async (req, res) => {
   try {
-    const result = await userService.checkUserWritten(req.user);
+    console.log('findUserPost');
+    console.log(req);
+    if (req.user == null) errorGenerator('조회 권한 없음', 403);
+    const result = await userService.findUserPost(req.user);
     res.status(200).json({
       status: 'success',
       result,
@@ -122,11 +125,10 @@ const createUserBookmark = async (req, res) => {
   }
 };
 
-const findUserBookmarkTest = async (req, res) => {
+const findUserBookmark = async (req, res) => {
   try {
-    const result = await userService.findUserBookmarkTest(req.user);
-    // console.log(result);
-    // return result;
+    const postId = req.params.postId;
+    const result = await userService.findUserBookmark(req.user, postId);
     res.status(200).json({
       status: 'success',
       result,
@@ -139,12 +141,28 @@ const findUserBookmarkTest = async (req, res) => {
   }
 };
 
+const removeUserBookmark = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const result = await userService.removeUserBookmark(req.user, postId);
+    res.status(200).json({
+      status: 'success',
+      result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
 export default {
   user,
   register,
   login,
   userInfo,
-  readUserWritten,
+  findUserPost,
   createUserBookmark,
-  findUserBookmarkTest,
+  findUserBookmark,
+  removeUserBookmark,
 };

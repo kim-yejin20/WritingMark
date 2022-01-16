@@ -24,9 +24,9 @@ const register = async (reqData) => {
   }
 };
 
-const checkUserWritten = async (user) => {
+const findUserPost = async (user) => {
   try {
-    const result = await userDAO.findUserWritten(user);
+    const result = await userDAO.findUserPost(user);
     return result;
   } catch (err) {
     throw err;
@@ -42,9 +42,18 @@ const createUserBookmark = async (userId, postId) => {
   }
 };
 
-const findUserBookmarkTest = async (user) => {
+const findUserBookmark = async (user) => {
   try {
     const result = await userDAO.findUserBookmarkTest(user);
+    return result;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const removeUserBookmark = async (userId, postId) => {
+  try {
+    const result = await userDAO.removeUserBookmark(userId, postId);
     return result;
   } catch (err) {
     throw err;
@@ -56,7 +65,8 @@ export default {
   checkUserNickname,
   checkUserinfo,
   register,
-  checkUserWritten,
+  findUserPost,
   createUserBookmark,
-  findUserBookmarkTest,
+  findUserBookmark,
+  removeUserBookmark,
 };
