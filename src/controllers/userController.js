@@ -89,8 +89,6 @@ const userInfo = async (req, res) => {
 
 const findUserPost = async (req, res) => {
   try {
-    console.log('findUserPost');
-    console.log(req);
     if (req.user == null) errorGenerator('조회 권한 없음', 403);
     const result = await userService.findUserPost(req.user);
     res.status(200).json({
@@ -106,11 +104,16 @@ const findUserPost = async (req, res) => {
 };
 
 const createUserBookmark = async (req, res) => {
+  //북마크하기
   try {
     const postId = req.params.postId;
-    console.log(postId);
-    console.log('북마크에옴');
     if (req.user == null) errorGenerator('로그인 후 가능합니다', 403);
+
+    //해당 게시글에 유저가 북마크 했는지 확인
+    const checkBookmark = await userService.checkBookmark(req.user, postId);
+
+    if (checkBookmark == true)
+      errorGenerator(('이미 북마크 한 글입니다.', 400));
     const result = await userService.createUserBookmark(req.user, postId);
     console.log(result);
     res.status(200).json({
@@ -126,6 +129,7 @@ const createUserBookmark = async (req, res) => {
 };
 
 const findUserBookmark = async (req, res) => {
+  // 유저가 북마크한 글
   try {
     const postId = req.params.postId;
     const result = await userService.findUserBookmark(req.user, postId);
@@ -142,6 +146,7 @@ const findUserBookmark = async (req, res) => {
 };
 
 const removeUserBookmark = async (req, res) => {
+  // 북마크 취소
   try {
     const postId = req.params.postId;
     const result = await userService.removeUserBookmark(req.user, postId);
