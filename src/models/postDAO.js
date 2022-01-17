@@ -55,4 +55,28 @@ const findPostHot = async () => {
     .sort({ 'count.bookmark': -1 });
   return result;
 };
-export default { createPost, createPostWithImg, findPostNew, findPostHot };
+
+const findPostsCategory = async (category) => {
+  const result = await Post.find({ category: category }).populate(
+    'writer',
+    'nickname profileImage'
+  );
+  return result;
+};
+
+const findDetailInfo = async (postId) => {
+  const result = await Post.findOne({ postId: postId }).populate(
+    'writer',
+    'nickname profileImage'
+  );
+  return result;
+};
+
+export default {
+  createPost,
+  createPostWithImg,
+  findPostNew,
+  findPostHot,
+  findPostsCategory,
+  findDetailInfo,
+};

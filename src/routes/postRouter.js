@@ -12,6 +12,7 @@ router.post(
   postController.createPost
 );
 
-router.get('', validateToken, postController.findPostTab);
-
+router.get('', postController.findPostTab);
+router.get('/category/:category', postController.findPostCategory);
+router.get('/:postId', postController.detailInfo);
 export default router;

@@ -10,6 +10,7 @@ router.post('/register', [registerLoginValidator], userController.register); //�
 router.post('/login', [registerLoginValidator], userController.login);
 // router.get('/info', validateToken, userController.userInfo);
 router.get('/info/edit', validateToken, userController.userInfo);
+router.patch('/info/edit', validateToken, userController.changeUserInfo);
 router.get('/posts', validateToken, userController.findUserPost);
 router.post(
   '/bookmark/:postId',
@@ -24,14 +25,4 @@ router.delete(
 );
 router.get('/bookmarks', validateToken, userController.findUserBookmark);
 
-//원래 여기 미들웨어가 어떻게 있어야하냐면
-// router.post('/register', 미들웨어자리, function (요청, 응답) {
-//   응답.send('마이페이지입니다.');
-// });
-
-function 미들웨어자리(req, res, next) {
-  // req = req.body;
-  console.log('여기가 미들웨어다!');
-  next();
-}
 export default router;

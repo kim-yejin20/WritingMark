@@ -2,7 +2,7 @@ import User from '../../schema/userSchema';
 import mongoose from 'mongoose';
 import moment from '../utils/moment';
 import Post from '../../schema/postSchema';
-import Bookmark from '../../schema/bookmarkSchema';
+// import Bookmark from '../../schema/bookmarkSchema';
 
 const checkUserEmail = async (email) => {
   return await User.findOne({ email: email });
@@ -19,6 +19,10 @@ const checkUserId = async (id) => {
 const checkUserInfo = async (id) => {
   return await User.findOne({ _id: id }, 'email nickname profileImage');
 };
+
+// const changeUserInfo = async (user, reqData) => {
+//   const result = await User.findOneAndUpdate({ _id: user._id },{nickname : });
+// };
 
 const createUser = async (reqData) => {
   const result = await new User({
@@ -46,11 +50,6 @@ const createUserBookmark = async (userId, postId) => {
     },
     { new: true }
   );
-  const newBookmark = await new Bookmark({
-    postId: result._id,
-    userId: userId._id,
-  }).save(); //.save()가 있어야 저장됨. 꼭 넣어주기
-
   return result;
 };
 
@@ -64,31 +63,19 @@ const findUserBookmark = async (user) => {
 };
 
 const removeUserBookmark = async (userId, postId) => {
-  console.log('userDAO에');
-  console.log(userId, postId);
-  const deleteBookmark = await Bookmark.findOneAndDelete({
-    $and: [{ postId: result._id }, { userId: userId._id }],
-  });
   const result = await Post.findOneAndUpdate(
     { postId: postId },
     {
-      $pull: { userBookmark: { _id: userId._id } },
+      $pull: { userBookmark: userId._id },
       $inc: { 'count.bookmark': -1 },
     },
     { new: true }
   );
-  console.log(result);
-  // const deleteBookmark = await Bookmark.findOneAndDelete({
-  //   $and: [{ postId: result._id }, { userId: userId._id }],
-  // });
+
   return result;
 };
 
 const checkBookmark = async (user_id, postId) => {
-  // const result = await Post.findOne({ userBookmark: user_id._id })
-  //   .select('userBookmark')
-  //   .lean();
-
   const result = await Post.exists({
     $and: [{ userBookmark: user_id._id }, { postId: postId }],
   });

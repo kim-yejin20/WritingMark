@@ -30,10 +30,12 @@ const createPost = async (req, res) => {
 
 const findPostTab = async (req, res) => {
   try {
-    console.log('req.query.tab이름은' + req.query.tab + '이다');
     const tab = req.query.tab;
 
-    if (tab == undefined) errorGenerator('잘못된 접근입니다', 400);
+    const tabArray = ['new', 'hot'];
+    const ArrReturn = tabArray.includes(tab);
+    if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
+
     const result = await postService.findPostsTab(tab);
 
     res.status(200).json({
@@ -48,4 +50,48 @@ const findPostTab = async (req, res) => {
   }
 };
 
-export default { createPost, findPostTab };
+const findPostCategory = async (req, res) => {
+  try {
+    const category = req.params.category;
+
+    const cateArray = [
+      'web-content',
+      'essay',
+      'novel',
+      'poetry',
+      'knowledge',
+      'etc',
+    ];
+    const ArrReturn = cateArray.includes(category);
+    if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
+
+    const result = await postService.findPostsCategory(category);
+    res.status(200).json({
+      status: 'success',
+      result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+const detailInfo = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const result = await postService.findDetailInfo(postId);
+    res.status(200).json({
+      status: 'success',
+      result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+export default { createPost, findPostTab, findPostCategory, detailInfo };

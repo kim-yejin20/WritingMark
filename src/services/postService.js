@@ -1,4 +1,4 @@
-import { postDAO } from '../models';
+import { postDAO, userDAO } from '../models';
 
 const createNewPost = async (user, data) => {
   const result = await postDAO.createPost(user, data);
@@ -22,4 +22,20 @@ const findPostsTab = async (tab) => {
   // return result;
 };
 
-export default { createNewPost, createNewPostWithImg, findPostsTab };
+const findPostsCategory = async (category) => {
+  const result = await postDAO.findPostsCategory(category);
+  return result;
+};
+
+const findDetailInfo = async (postId) => {
+  const result = await postDAO.findDetailInfo(postId);
+  return result;
+};
+
+export default {
+  createNewPost,
+  createNewPostWithImg,
+  findPostsTab,
+  findPostsCategory,
+  findDetailInfo,
+};
