@@ -27,6 +27,11 @@ const findPostsCategory = async (category) => {
   return result;
 };
 
+const checkPostId = async (postId) => {
+  const result = await postDAO.checkPostId(postId);
+  return result;
+};
+
 const findDetailInfo = async (postId) => {
   const result = await postDAO.findDetailInfo(postId);
   return result;
@@ -37,5 +42,6 @@ export default {
   createNewPostWithImg,
   findPostsTab,
   findPostsCategory,
+  checkPostId,
   findDetailInfo,
 };

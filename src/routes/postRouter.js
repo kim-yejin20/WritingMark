@@ -15,4 +15,5 @@ router.post(
 router.get('', postController.findPostTab);
 router.get('/category/:category', postController.findPostCategory);
 router.get('/:postId', postController.detailInfo);
+router.delete('/:postId', validateToken, postController.removePost);
 export default router;

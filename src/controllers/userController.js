@@ -129,6 +129,7 @@ const createUserBookmark = async (req, res) => {
 
     if (checkBookmark == true) errorGenerator('이미 북마크 한 글입니다.', 400);
     const result = await userService.createUserBookmark(req.user, postId);
+    console.log('북마크 하기 결과', result);
     res.status(200).json({
       status: 'success',
       result,
@@ -170,6 +171,8 @@ const removeUserBookmark = async (req, res) => {
       errorGenerator('취소할 수 있는 북마크가 없습니다.', 400);
 
     const result = await userService.removeUserBookmark(req.user, postId);
+
+    console.log('북마크 삭제 결과', result);
     res.status(200).json({
       status: 'success',
       result,

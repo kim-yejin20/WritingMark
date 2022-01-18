@@ -52,6 +52,7 @@ const findPostTab = async (req, res) => {
 
 const findPostCategory = async (req, res) => {
   try {
+    console.log('controller');
     const category = req.params.category;
 
     const cateArray = [
@@ -81,6 +82,10 @@ const findPostCategory = async (req, res) => {
 const detailInfo = async (req, res) => {
   try {
     const postId = req.params.postId;
+
+    const checkPostId = await postService.checkPostId(postId);
+    if (checkPostId == false)
+      errorGenerator('잘못된 주소이거나, 비공개 또는 삭제된 글입니다', 400);
     const result = await postService.findDetailInfo(postId);
     res.status(200).json({
       status: 'success',
@@ -94,4 +99,21 @@ const detailInfo = async (req, res) => {
   }
 };
 
-export default { createPost, findPostTab, findPostCategory, detailInfo };
+const removePost = async (req, res) => {
+  try {
+    console.log('req.user는?', req.user);
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+export default {
+  createPost,
+  findPostTab,
+  findPostCategory,
+  detailInfo,
+  removePost,
+};

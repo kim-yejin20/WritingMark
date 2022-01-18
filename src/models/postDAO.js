@@ -64,6 +64,12 @@ const findPostsCategory = async (category) => {
   return result;
 };
 
+const checkPostId = async (postId) => {
+  const result = await Post.exists({ postId: postId });
+  console.log('확인결과', result);
+  return result;
+};
+
 const findDetailInfo = async (postId) => {
   const result = await Post.findOne({ postId: postId }).populate(
     'writer',
@@ -78,5 +84,6 @@ export default {
   findPostNew,
   findPostHot,
   findPostsCategory,
+  checkPostId,
   findDetailInfo,
 };

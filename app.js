@@ -21,7 +21,7 @@ app.use(router);
 app.use(morgan('dev'));
 
 app.all('*', (req, res, next) => {
-  next(new Error('Page not found'));
+  res.status(404).json({ status: 'fail', message: 'Page not found' });
 });
 
 app.use((err, req, res, next) => {
