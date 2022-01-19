@@ -37,6 +37,21 @@ const findDetailInfo = async (postId) => {
   return result;
 };
 
+const checkPostWriter = async (postId) => {
+  const result = await postDAO.checkPostWriter(postId);
+  return result;
+};
+
+const removePost = async (postId) => {
+  const result = await postDAO.removePost(postId);
+  return result;
+};
+
+const updatePost = async (postId, data, file) => {
+  const result = await postDAO.updatePost(postId, data, file);
+  return result;
+}
+
 export default {
   createNewPost,
   createNewPostWithImg,
@@ -44,4 +59,7 @@ export default {
   findPostsCategory,
   checkPostId,
   findDetailInfo,
+  checkPostWriter,
+  removePost,
+  updatePost,
 };

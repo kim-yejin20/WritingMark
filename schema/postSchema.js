@@ -11,9 +11,13 @@ const postSchema = new Schema({
     required: true,
     ref: 'User',
   },
-  category: {
+  categoryValue: {
     type: String,
     required: true,
+  },
+  categoryLabel : {
+    type: String,
+    required : true,
   },
   content: {
     type: String,
