@@ -38,6 +38,11 @@ const userSchema = new Schema({
   createdAt: {
     type: String,
   },
+  state: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active',
+  },
   // bookmarkPost: [
   //   {
   //     type: mongoose.Types.ObjectId,

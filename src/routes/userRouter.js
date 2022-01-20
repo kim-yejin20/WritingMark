@@ -25,4 +25,6 @@ router.delete(
 );
 router.get('/bookmarks', validateToken, userController.findUserBookmark);
 
+router.post('/withdrawal', validateToken, userController.removeUserInfo);
+
 export default router;

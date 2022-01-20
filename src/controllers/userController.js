@@ -184,6 +184,32 @@ const removeUserBookmark = async (req, res) => {
     });
   }
 };
+
+const removeUserInfo = async (req, res) => {
+  try {
+    const checkPW = await userService.checkUserinfo(req.user._id);
+
+    const isValidUser = await bcrypt.comparePassword(
+      req.body.password,
+      checkPW.password
+    );
+
+    if (isValidUser == false) errorGenerator('비밀번호가 틀렸습니다', 400);
+
+    const result = await userService.removeUserInfo(req.user);
+    //서비스랑 DAO 작성하기
+
+    res.status(200).json({
+      status: 'success',
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
 export default {
   user,
   register,
@@ -194,4 +220,5 @@ export default {
   createUserBookmark,
   findUserBookmark,
   removeUserBookmark,
+  removeUserInfo,
 };

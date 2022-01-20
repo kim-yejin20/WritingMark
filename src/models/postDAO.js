@@ -68,7 +68,6 @@ const findPostsCategory = async (category) => {
 
 const checkPostId = async (postId) => {
   const result = await Post.exists({ postId: postId });
-  console.log('확인결과', result);
   return result;
 };
 
@@ -82,19 +81,25 @@ const findDetailInfo = async (postId) => {
 
 const checkPostWriter = async (postId) => {
   const result = await Post.findOne({ postId: postId }).select('writer');
-  console.log('결과?', result);
-  // console.log('글쓴사람?', result.writer);
   return result;
 };
 
 const removePost = async (postId) => {
   const result = await Post.findOneAndDelete({ postId: postId });
-  console.log('다오에서 결과값', result);
   return result;
 };
 
-const updatePost = async (postId, data, file) => {
-  const result = await Post.findOneAndUpdate({postId : postId}, {category: data.category,
+
+// -------------------
+
+const checkPostImg = async (postId) => {
+  const result = await Post.findOne({ postId: postId }).select('image');
+  return result;
+}
+
+const updatePostWithImg = async(postId, data, file) => {
+  const result = await Post.findOneAndUpdate({postId : postId}, {categoryValue: data.category_value,
+    categoryLabel : data.category_label,
     content: data.content,
     createdAt: moment.localTime,
     info_title: data.info_title,
@@ -102,9 +107,34 @@ const updatePost = async (postId, data, file) => {
     image: {
       info_image: file.key.replace('post/', ''),
       originalImageName: file.originalname,
-    },})
+    }})
+  return result;
+}
+
+const updatePostKeep = async(postId, data) => {
+  const result = await Post.findOneAndUpdate({postId:postId}, {categoryValue: data.category_value,
+    categoryLabel : data.category_label,
+    content: data.content,
+    createdAt: moment.localTime,
+    info_title: data.info_title,
+    info_url: data.info_url,
+    });
+  return result;
+}
+
+const updatePostRemove = async (postId, data) => {
+  const result = await Post.findOneAndUpdate({postId : postId},{categoryValue: data.category_value,
+    categoryLabel : data.category_label,
+    content: data.content,
+    createdAt: moment.localTime,
+    info_title: data.info_title,
+    info_url: data.info_url,
+    $unset : { image : ""}  //이렇게 수정하고 나면 undefined으로 되나? 
+    })
   return result
 }
+
+
 
 export default {
   createPost,
@@ -116,5 +146,8 @@ export default {
   findDetailInfo,
   checkPostWriter,
   removePost,
-  updatePost
+  checkPostImg,
+  updatePostWithImg,
+  updatePostKeep,
+  updatePostRemove
 };

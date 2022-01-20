@@ -21,57 +21,38 @@ const changeUserInfo = async (user, reqData) => {
 };
 
 const register = async (reqData) => {
-  try {
-    const result = await userDAO.createUser(reqData);
-    return result;
-  } catch (err) {
-    throw err;
-  }
+  const result = await userDAO.createUser(reqData);
+  return result;
 };
 
 const findUserPost = async (user) => {
-  try {
-    const result = await userDAO.findUserPost(user);
-    return result;
-  } catch (err) {
-    throw err;
-  }
+  const result = await userDAO.findUserPost(user);
+  return result;
 };
 
 const createUserBookmark = async (user_id, postId) => {
-  try {
-    const result = await userDAO.createUserBookmark(user_id, postId);
-    return result;
-  } catch (err) {
-    throw err;
-  }
+  const result = await userDAO.createUserBookmark(user_id, postId);
+  return result;
 };
 
 const findUserBookmark = async (user) => {
-  try {
-    const result = await userDAO.findUserBookmark(user);
-    return result;
-  } catch (err) {
-    throw err;
-  }
+  const result = await userDAO.findUserBookmark(user);
+  return result;
 };
 
 const removeUserBookmark = async (user_id, postId) => {
-  try {
-    const result = await userDAO.removeUserBookmark(user_id, postId);
-    return result;
-  } catch (err) {
-    throw err;
-  }
+  const result = await userDAO.removeUserBookmark(user_id, postId);
+  return result;
 };
 
 const checkBookmark = async (user_id, postId) => {
-  try {
-    const result = await userDAO.checkBookmark(user_id, postId);
-    return result;
-  } catch (err) {
-    throw err;
-  }
+  const result = await userDAO.checkBookmark(user_id, postId);
+  return result;
+};
+
+const removeUserInfo = async (user) => {
+  const result = await userDAO.removeUserInfo(user);
+  return result;
 };
 
 export default {
@@ -85,4 +66,5 @@ export default {
   findUserBookmark,
   removeUserBookmark,
   checkBookmark,
+  removeUserInfo,
 };

@@ -13,6 +13,9 @@ const commentSchema = new Schema(
       ref: 'Post',
       required: true,
     },
+    postId : {
+      type: Number,
+    },
     writer: {
       type: mongoose.Schema.type.ObjectId,
       ref: 'User',

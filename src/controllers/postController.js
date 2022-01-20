@@ -117,18 +117,13 @@ const removePost = async (req, res) => {
     const info_image = result.image.info_image;
 
     s3.deleteObject(
-      { Bucket: 'writingmark', Key: `post/${info_image}` },
-      (err, data) => {
-        if (err) {
-          throw err;
-        }
-        console.log('이미지까지 삭제 완료');
-      }
+      { Bucket: 'writingmark', Key: `post/${info_image}` }
     );
 
     res.status(200).json({
       status: 'success',
     });
+    
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -140,34 +135,32 @@ const removePost = async (req, res) => {
 const updatePost = async (req, res) => {
   try {
     const postId = req.params.postId;
-    const user = req.user;
     const data = req.body;
     const file = req.file;
 
     const checkPost = await postService.checkPostWriter(postId);
     const user_id = req.user._id.toString();
     const writer_id = checkPost.writer._id.toString();
-
+  
     if (req.user.role == 'user' && user_id != writer_id)
       errorGenerator('수정 권한없음', 403);
-    const result = await postService.updatePost(postId, data, file);
-    // result는 수정 전의 s3객체 키를 가지고 있음. 
 
-    s3.deleteObject(
-      { Bucket: 'writingmark', Key: `post/${info_image}` },
-      (err, data) => {
-        if (err) {
-          throw err;
-        }
-        console.log('이미지까지 삭제 완료');
-      }
-    );
+    if (file != undefined) {
+       // 이미지 변경 혹은 이미지 추가
+      const result = await postService.updatePostWithImage(postId, data, file)
+      return res.status(200).json({
+        status: 'success',
+        postId : result.postId
+      });
+    }
 
+    const result = await postService.updatePost(postId, data);
 
     res.status(200).json({
       status: 'success',
-      result,
+      postId : result.postId
     });
+
   } catch (err) {
     res.status(400).json({
       status: 'fail',

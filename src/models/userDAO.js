@@ -83,6 +83,11 @@ const checkBookmark = async (user_id, postId) => {
   return result;
 };
 
+const removeUserInfo = async (user) => {
+  const result = await User.findOneAndDelete({ _id: user._id });
+  return result;
+};
+
 export default {
   checkUserEmail,
   checkUserNickname,
@@ -94,4 +99,5 @@ export default {
   findUserBookmark,
   removeUserBookmark,
   checkBookmark,
+  removeUserInfo,
 };
