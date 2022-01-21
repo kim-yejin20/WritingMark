@@ -48,59 +48,62 @@ const removePost = async (postId) => {
   return result;
 };
 
-//-----
-
-
-// ---------
-
-const updatePostWithImage = async(postId, data, file) => { 
+const updatePostWithImage = async (postId, data, file) => {
   const checkPostImg = await postDAO.checkPostImg(postId);
 
   if (checkPostImg.image.info_image == undefined) {
-    // 이미지 추가 
+    // 이미지 추가
     const result = await postDAO.updatePostWithImg(postId, data, file);
-    console.log('수정전 이미지 없음 // 이미지 추가 완료')
-    return result 
+    console.log('수정전 이미지 없음 // 이미지 추가 완료');
+    return result;
   }
 
   // 이미지 변경
   const result = await postDAO.updatePostWithImg(postId, data, file);
-  const info_image = result.image.info_image
-  s3.deleteObject({
-    Bucket : 'writingmark', Key : `post/${info_image}`
-  }, (err, data) => {
-    if (err) {
-      console.log(err)
-      throw err;
+  const info_image = result.image.info_image;
+  s3.deleteObject(
+    {
+      Bucket: 'writingmark',
+      Key: `post/${info_image}`,
+    },
+    (err, data) => {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+      console.log('이미지 변경 요청 // 수정 전 이미지 삭제완료 ');
     }
-    console.log('이미지 변경 요청 // 수정 전 이미지 삭제완료 ')
-  })
+  );
   return result;
-}
+};
 
-const updatePost = async(postId, data) => {
+const updatePost = async (postId, data) => {
   const checkPostImg = await postDAO.checkPostImg(postId);
 
   if (data.info_image == checkPostImg.image.info_image) {
-    // 이미지 변경 없음 
+    // 이미지 변경 없음
     const result = await postDAO.updatePostKeep(postId, data);
     return result;
   }
 
-  // 이미지 삭제 
+  // 이미지 삭제
   const result = await postDAO.updatePostRemove(postId, data);
-  const info_image = result.image.info_image
-  s3.deleteObject({
-    Bucket : 'writingmark', Key : `post/${info_image}`
-  }, (err, data) => {
-    if (err) {
-      console.log(err)
-      throw err;
+  const info_image = result.image.info_image;
+  s3.deleteObject(
+    {
+      Bucket: 'writingmark',
+      Key: `post/${info_image}`,
+    },
+    (err, data) => {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+      console.log('이미지 삭제 요청 // 이미지 삭제완료 ');
     }
-    console.log('이미지 삭제 요청 // 이미지 삭제완료 ')
-  })
-return result;
-}
+  );
+  return result;
+};
 
 export default {
   createNewPost,
@@ -112,5 +115,5 @@ export default {
   checkPostWriter,
   removePost,
   updatePostWithImage,
-  updatePost
+  updatePost,
 };

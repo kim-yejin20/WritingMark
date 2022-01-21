@@ -8,7 +8,7 @@ const createPost = async (req, res) => {
     const user = req.user;
     const data = req.body;
     const file = req.file;
-    console.log('data는?',data);
+    console.log('data는?', data);
     if (req.user == null) errorGenerator('로그인후 가능합니다', 403);
     if (file !== undefined) {
       const result = await postService.createNewPostWithImg(user, data, file);
@@ -116,14 +116,11 @@ const removePost = async (req, res) => {
     const result = await postService.removePost(postId);
     const info_image = result.image.info_image;
 
-    s3.deleteObject(
-      { Bucket: 'writingmark', Key: `post/${info_image}` }
-    );
+    s3.deleteObject({ Bucket: 'writingmark', Key: `post/${info_image}` });
 
     res.status(200).json({
       status: 'success',
     });
-    
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -141,16 +138,16 @@ const updatePost = async (req, res) => {
     const checkPost = await postService.checkPostWriter(postId);
     const user_id = req.user._id.toString();
     const writer_id = checkPost.writer._id.toString();
-  
+
     if (req.user.role == 'user' && user_id != writer_id)
       errorGenerator('수정 권한없음', 403);
 
     if (file != undefined) {
-       // 이미지 변경 혹은 이미지 추가
-      const result = await postService.updatePostWithImage(postId, data, file)
+      // 이미지 변경 혹은 이미지 추가
+      const result = await postService.updatePostWithImage(postId, data, file);
       return res.status(200).json({
         status: 'success',
-        postId : result.postId
+        postId: result.postId,
       });
     }
 
@@ -158,9 +155,8 @@ const updatePost = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      postId : result.postId
+      postId: result.postId,
     });
-
   } catch (err) {
     res.status(400).json({
       status: 'fail',

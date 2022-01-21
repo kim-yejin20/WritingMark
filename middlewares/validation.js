@@ -26,3 +26,20 @@ export const registerLoginValidator = [
 
   validate,
 ];
+
+export const changeInfoValidator = [
+  check('email')
+    .not()
+    .isEmpty()
+    .withMessage('이메일은 필수 항목입니다.')
+    .bail()
+    .isEmail()
+    .withMessage('이메일형식이 아닙니다.'),
+  check('nickname')
+    .not()
+    .isEmpty()
+    .withMessage('닉네임은 필수 항목입니다')
+    .bail()
+    .isLength({ max: 7 })
+    .withMessage('닉네임은 최대 7글자입니다'),
+];

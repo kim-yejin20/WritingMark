@@ -89,10 +89,30 @@ const userInfo = async (req, res) => {
 
 const changeUserInfo = async (req, res) => {
   try {
-    const result = await userService.changeUserInfo(req.user, req.body);
+    if (req.ValidationError) {
+      return res.status(409).json({
+        status: 'fail',
+        message: req.ValidationError,
+      });
+    }
+
+    if (file != undefined) {
+      //프로필 이미지 변경
+      const result = await userService.changeUserInfoWithImg(
+        req.user,
+        reqData,
+        file
+      );
+      return res.status(200).json({
+        status: 'success',
+      });
+    }
+
+    // 이미지 수정
+    const result = await userService.changeUserInfo(req.user, reqData);
+
     res.status(200).json({
       status: 'success',
-      result,
     });
   } catch (err) {
     res.status(400).json({
@@ -187,6 +207,7 @@ const removeUserBookmark = async (req, res) => {
 
 const removeUserInfo = async (req, res) => {
   try {
+    // 이거 아직 안끝남!!!!!!!!!!!!!!
     const checkPW = await userService.checkUserinfo(req.user._id);
 
     const isValidUser = await bcrypt.comparePassword(

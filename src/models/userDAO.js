@@ -9,7 +9,7 @@ const checkUserEmail = async (email) => {
 };
 
 const checkUserNickname = async (nickname) => {
-  return await User.findOne({ nickname });
+  return await User.findOne({ nickname: nickname });
 };
 
 const checkUserId = async (id) => {
@@ -20,9 +20,38 @@ const checkUserInfo = async (id) => {
   return await User.findOne({ _id: id }, 'email nickname profileImage');
 };
 
-// const changeUserInfo = async (user, reqData) => {
-//   const result = await User.findOneAndUpdate({ _id: user._id },{nickname : });
-// };
+const changeUserInfoWithImg = async (user, reqData, file) => {
+  const result = await User.findByIdAndUpdate(
+    { _id: user._id },
+    {
+      email: reqData.email,
+      nickname: reqData.nickname,
+      profileImage: file.key.replace('user/', ''),
+    }
+  );
+  console.log('문서 수정 전 result', result);
+  return result;
+};
+
+const changeNotImage = async (user, reqData) => {
+  const result = await User.findByIdAndUpdate(
+    { _id: user._id },
+    { email: reqData.email, nickname: reqData.nickname }
+  );
+  return result;
+};
+
+const changeBasicImage = async (user, reqData) => {
+  const result = await User.findOneAndUpdate(
+    { _id: user._id },
+    {
+      email: reqData.email,
+      nickname: reqData.nickname,
+      profileImage: 'basicProfileImage.png',
+    }
+  );
+  return result;
+};
 
 const createUser = async (reqData) => {
   const result = await new User({
@@ -79,12 +108,15 @@ const checkBookmark = async (user_id, postId) => {
   const result = await Post.exists({
     $and: [{ userBookmark: user_id._id }, { postId: postId }],
   });
-  console.log(result);
   return result;
 };
 
 const removeUserInfo = async (user) => {
-  const result = await User.findOneAndDelete({ _id: user._id });
+  // 유저 정보 삭제
+  const userInfo = await User.findOneAndDelete({ _id: user._id });
+
+  // 유저가 북마크한 글 삭제
+  // 이거 다시 손 봐야함니다.
   return result;
 };
 
@@ -93,6 +125,9 @@ export default {
   checkUserNickname,
   checkUserId,
   checkUserInfo,
+  changeUserInfoWithImg,
+  changeNotImage,
+  changeBasicImage,
   createUser,
   findUserPost,
   createUserBookmark,

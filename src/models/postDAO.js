@@ -11,7 +11,7 @@ const createPost = async (user, data) => {
     postId: getCount.postTotal,
     writer: user._id,
     categoryValue: data.category_value,
-    categoryLabel : data.category_label,
+    categoryLabel: data.category_label,
     content: data.content,
     createdAt: moment.localTime,
     info_title: data.info_title,
@@ -30,7 +30,7 @@ const createPostWithImg = async (user, data, file) => {
     postId: getCount.postTotal,
     writer: user._id,
     categoryValue: data.category_value,
-    categoryLabel : data.category_label,
+    categoryLabel: data.category_label,
     content: data.content,
     createdAt: moment.localTime,
     info_title: data.info_title,
@@ -89,52 +89,62 @@ const removePost = async (postId) => {
   return result;
 };
 
-
 // -------------------
 
 const checkPostImg = async (postId) => {
   const result = await Post.findOne({ postId: postId }).select('image');
   return result;
-}
+};
 
-const updatePostWithImg = async(postId, data, file) => {
-  const result = await Post.findOneAndUpdate({postId : postId}, {categoryValue: data.category_value,
-    categoryLabel : data.category_label,
-    content: data.content,
-    createdAt: moment.localTime,
-    info_title: data.info_title,
-    info_url: data.info_url,
-    image: {
-      info_image: file.key.replace('post/', ''),
-      originalImageName: file.originalname,
-    }})
+const updatePostWithImg = async (postId, data, file) => {
+  const result = await Post.findOneAndUpdate(
+    { postId: postId },
+    {
+      categoryValue: data.category_value,
+      categoryLabel: data.category_label,
+      content: data.content,
+      createdAt: moment.localTime,
+      info_title: data.info_title,
+      info_url: data.info_url,
+      image: {
+        info_image: file.key.replace('post/', ''),
+        originalImageName: file.originalname,
+      },
+    }
+  );
   return result;
-}
+};
 
-const updatePostKeep = async(postId, data) => {
-  const result = await Post.findOneAndUpdate({postId:postId}, {categoryValue: data.category_value,
-    categoryLabel : data.category_label,
-    content: data.content,
-    createdAt: moment.localTime,
-    info_title: data.info_title,
-    info_url: data.info_url,
-    });
+const updatePostKeep = async (postId, data) => {
+  const result = await Post.findOneAndUpdate(
+    { postId: postId },
+    {
+      categoryValue: data.category_value,
+      categoryLabel: data.category_label,
+      content: data.content,
+      createdAt: moment.localTime,
+      info_title: data.info_title,
+      info_url: data.info_url,
+    }
+  );
   return result;
-}
+};
 
 const updatePostRemove = async (postId, data) => {
-  const result = await Post.findOneAndUpdate({postId : postId},{categoryValue: data.category_value,
-    categoryLabel : data.category_label,
-    content: data.content,
-    createdAt: moment.localTime,
-    info_title: data.info_title,
-    info_url: data.info_url,
-    $unset : { image : ""}  //이렇게 수정하고 나면 undefined으로 되나? 
-    })
-  return result
-}
-
-
+  const result = await Post.findOneAndUpdate(
+    { postId: postId },
+    {
+      categoryValue: data.category_value,
+      categoryLabel: data.category_label,
+      content: data.content,
+      createdAt: moment.localTime,
+      info_title: data.info_title,
+      info_url: data.info_url,
+      $unset: { image: '' }, //이렇게 수정하고 나면 undefined으로 되나?
+    }
+  );
+  return result;
+};
 
 export default {
   createPost,
@@ -149,5 +159,5 @@ export default {
   checkPostImg,
   updatePostWithImg,
   updatePostKeep,
-  updatePostRemove
+  updatePostRemove,
 };

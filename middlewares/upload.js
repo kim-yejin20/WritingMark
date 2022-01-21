@@ -3,6 +3,8 @@ import multerS3 from 'multer-s3';
 import aws from 'aws-sdk';
 import { s3 } from '../src/utils/aws';
 import { v4 } from 'uuid';
+import { errorGenerator } from '../src/utils';
+import { checkDuplicate } from './checkDuplicate';
 
 const storage = multerS3({
   s3,
@@ -19,7 +21,11 @@ const storage = multerS3({
 
 export const upload = multer({
   storage,
-  fileFilter: (req, file, cb) => {
+  fileFilter: async (req, file, cb) => {
+    if (file.fieldname == 'user_profile') {
+      const checkTest = await checkDuplicate(req);
+      if (req.ValidationError) return cb(null, false);
+    }
     if (['image/jpeg', 'image/png'].includes(file.mimetype)) cb(null, true);
     else cb(new Error('invalid file type'), false);
   },
