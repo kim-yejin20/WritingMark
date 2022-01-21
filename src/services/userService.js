@@ -16,6 +16,11 @@ const checkUserinfo = async (_id) => {
   return result;
 };
 
+const checkUserId = async (_id) => {
+  const result = await userDAO.checkUserId(_id);
+  return result;
+};
+
 const changeUserInfoWithImg = async (user, reqData, file) => {
   const result = await userDAO.changeUserInfoWithImg(user, reqData, file);
   const user_profile = result.profileImage;
@@ -66,6 +71,11 @@ const changeUserInfo = async (user, reqData) => {
   return result;
 };
 
+const changeUserPassword = async (user, reqData) => {
+  const result = await userDAO.changeUserPassword(user, reqData);
+  return result;
+};
+
 const register = async (reqData) => {
   const result = await userDAO.createUser(reqData);
   return result;
@@ -105,8 +115,10 @@ export default {
   checkUserEmail,
   checkUserNickname,
   checkUserinfo,
+  checkUserId,
   changeUserInfoWithImg,
   changeUserInfo,
+  changeUserPassword,
   register,
   findUserPost,
   createUserBookmark,

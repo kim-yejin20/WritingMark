@@ -13,7 +13,8 @@ const checkUserNickname = async (nickname) => {
 };
 
 const checkUserId = async (id) => {
-  return await User.findOne({ _id: id }, '_id nickname role profileImage');
+  // return await User.findOne({ _id: id }, '_id nickname role profileImage');
+  return await User.findById({ _id: id }).select('_id password');
 };
 
 const checkUserInfo = async (id) => {
@@ -49,6 +50,15 @@ const changeBasicImage = async (user, reqData) => {
       nickname: reqData.nickname,
       profileImage: 'basicProfileImage.png',
     }
+  );
+  return result;
+};
+
+const changeUserPassword = async (user, reqData) => {
+  const result = await User.findByIdAndUpdate(
+    { _id: user._id },
+    { password: reqData.password },
+    { new: true }
   );
   return result;
 };
@@ -128,6 +138,7 @@ export default {
   changeUserInfoWithImg,
   changeNotImage,
   changeBasicImage,
+  changeUserPassword,
   createUser,
   findUserPost,
   createUserBookmark,

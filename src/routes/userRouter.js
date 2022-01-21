@@ -1,7 +1,7 @@
 import express from 'express';
 import { registerLoginValidator } from '../../middlewares/validation';
 import { changeInfoValidator } from '../../middlewares/validation';
-import { checkDuplicate } from '../../middlewares/checkDuplicate';
+import { changePwValidator } from '../../middlewares/validation';
 import { validateToken } from '../../middlewares/validateToken';
 import { userController } from '../controllers';
 import { upload } from '../../middlewares/upload';
@@ -19,6 +19,12 @@ router.patch(
   [changeInfoValidator],
   upload.single('user_profile'),
   userController.changeUserInfo
+);
+router.patch(
+  '/info/password',
+  [changePwValidator],
+  validateToken,
+  userController.changeUserPassword
 );
 router.get('/posts', validateToken, userController.findUserPost);
 router.post(

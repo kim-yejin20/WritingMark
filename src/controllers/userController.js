@@ -1,3 +1,4 @@
+import { body } from 'express-validator';
 import { userDAO } from '../models';
 import { userService } from '../services';
 import { bcrypt, crypto, errorGenerator } from '../utils';
@@ -138,6 +139,38 @@ const findUserPost = async (req, res) => {
   }
 };
 
+const changeUserPassword = async (req, res) => {
+  try {
+    // const userEmail = await userService.checkUserEmail(req.body.email);
+    const userInfo = await userService.checkUserId(req.user);
+
+    const isSamePW = await bcrypt.comparePassword(
+      req.body.password,
+      userInfo.password
+    );
+    if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
+
+    if (req.body.newPassword == req.body.checkPassword)
+      errorGenerator(
+        '새로운 비밀번호와 비밀번호 확인 입력이 같지 않습니다.',
+        401
+      );
+    const hashPassword = await bcrypt.encryptPassword(req.body.password, 10);
+    req.body.password = hashPassword;
+    const result = await userService.changeUserPassword(req.user, req.body);
+
+    res.status(200).json({
+      status: 'success',
+      result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
 const createUserBookmark = async (req, res) => {
   //북마크하기
   try {
@@ -192,7 +225,6 @@ const removeUserBookmark = async (req, res) => {
 
     const result = await userService.removeUserBookmark(req.user, postId);
 
-    console.log('북마크 삭제 결과', result);
     res.status(200).json({
       status: 'success',
       result,
@@ -237,6 +269,7 @@ export default {
   login,
   userInfo,
   changeUserInfo,
+  changeUserPassword,
   findUserPost,
   createUserBookmark,
   findUserBookmark,

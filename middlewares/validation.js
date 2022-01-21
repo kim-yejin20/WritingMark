@@ -42,4 +42,24 @@ export const changeInfoValidator = [
     .bail()
     .isLength({ max: 7 })
     .withMessage('닉네임은 최대 7글자입니다'),
+
+  validate,
+];
+
+export const changePwValidator = [
+  check('password').not().isEmpty().withMessage('비밀번호는 필수 항목입니다.'),
+  check('newPassword')
+    .not()
+    .isEmpty()
+    .withMessage('새로운 비밀번호는 필수 항목입니다')
+    .isLength({ min: 7 })
+    .withMessage('비밀번호는 최소 7글자 이상이어야합니다.'),
+  check('checkPassword')
+    .not()
+    .isEmpty()
+    .withMessage('비밀번호 확인은 필수 항목입니다')
+    .isLength({ min: 7 })
+    .withMessage('비밀번호는 최소 7글자 이상이어야합니다.'),
+
+  validate,
 ];
