@@ -20,8 +20,8 @@ const checkComment = async (postId, commentId) => {
   return result;
 };
 
-const removeComment = async (commentId) => {
-  const result = await commentDAO.removeComment(commentId);
+const removeComment = async (postId, commentId) => {
+  const result = await commentDAO.removeComment(postId, commentId);
   return result;
 };
 

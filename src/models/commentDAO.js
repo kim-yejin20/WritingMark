@@ -41,9 +41,15 @@ const checkComment = async (postId, commentId) => {
   return result;
 };
 
-const removeComment = async (commentId) => {
+const removeComment = async (postId, commentId) => {
   const result = await Comment.findByIdAndDelete({ _id: commentId });
-  return result;
+  const decCommentCount = await Post.findOneAndUpdate(
+    { postId: postId },
+    { $inc: { 'count.comment': -1 } },
+    { new: true }
+  );
+  // return 확인하기!
+  return decCommentCount;
 };
 
 export default {

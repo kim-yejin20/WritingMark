@@ -52,7 +52,7 @@ const removeComment = async (req, res) => {
     const writer = checkWriter.writer._id.toString();
     if (user != writer) errorGenerator('삭제 권한 없음', 403);
 
-    const result = await commentService.removeComment(commentId);
+    const result = await commentService.removeComment(postId, commentId);
     console.log(result);
 
     res.status(200).json({
