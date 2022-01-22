@@ -15,9 +15,9 @@ const postSchema = new Schema({
     type: String,
     required: true,
   },
-  categoryLabel : {
+  categoryLabel: {
     type: String,
-    required : true,
+    required: true,
   },
   content: {
     type: String,

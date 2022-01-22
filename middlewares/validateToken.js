@@ -16,7 +16,7 @@ export const validateToken = async (req, res, next) => {
     if (req.headers.authorization) {
       const checkToken = await jwt.verifyToken(req.headers.authorization);
       if (!checkToken) errorGenerator('인증 오류', 403);
-      const user = await userDAO.checkUserId(checkToken);
+      const user = await userDAO.checkUserToken(checkToken);
       req.user = user;
       next();
     }

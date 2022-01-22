@@ -12,8 +12,11 @@ const checkUserNickname = async (nickname) => {
   return await User.findOne({ nickname: nickname });
 };
 
+const checkUserToken = async (id) => {
+  return await User.findOne({ _id: id }, '_id nickname role profileImage');
+};
+
 const checkUserId = async (id) => {
-  // return await User.findOne({ _id: id }, '_id nickname role profileImage');
   return await User.findById({ _id: id }).select('_id password');
 };
 
@@ -123,16 +126,26 @@ const checkBookmark = async (user_id, postId) => {
 
 const removeUserInfo = async (user) => {
   // 유저 정보 삭제
-  const userInfo = await User.findOneAndDelete({ _id: user._id });
+  // const removeUser = await User.findByIdAndDelete({ _id: user._id }); // 테스트중이라 잠시 삭제
 
-  // 유저가 북마크한 글 삭제
+  //유저가 북마크 한 글 배열에 담김
+  const removeBookmark = await Post.find({ userBookmark: { $in: user._id } });
+
+  //유저가 쓴 글 배열에 담김 -> 게시글, 댓글은 삭제 안하기로 했지
+  const removePost = await Post.find({ writer: user._id });
+
+  return removePost;
+
+  // return removeBookmark;
+
   // 이거 다시 손 봐야함니다.
-  return result;
+  // return result;
 };
 
 export default {
   checkUserEmail,
   checkUserNickname,
+  checkUserToken,
   checkUserId,
   checkUserInfo,
   changeUserInfoWithImg,

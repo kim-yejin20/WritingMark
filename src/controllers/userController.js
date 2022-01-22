@@ -239,19 +239,19 @@ const removeUserBookmark = async (req, res) => {
 
 const removeUserInfo = async (req, res) => {
   try {
-    // 이거 아직 안끝남!!!!!!!!!!!!!!
-    const checkPW = await userService.checkUserinfo(req.user._id);
+    // 이거 아직 안끝남 !!
+    const userInfo = await userService.checkUserId(req.user._id);
 
-    const isValidUser = await bcrypt.comparePassword(
+    const isSamePW = await bcrypt.comparePassword(
       req.body.password,
-      checkPW.password
+      userInfo.password
     );
 
-    if (isValidUser == false) errorGenerator('비밀번호가 틀렸습니다', 400);
+    if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
 
     const result = await userService.removeUserInfo(req.user);
     //서비스랑 DAO 작성하기
-
+    console.log(result);
     res.status(200).json({
       status: 'success',
     });
