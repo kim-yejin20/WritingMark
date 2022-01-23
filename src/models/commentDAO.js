@@ -52,10 +52,19 @@ const removeComment = async (postId, commentId) => {
   return decCommentCount;
 };
 
+const updateComment = async (commentId, reqData) => {
+  const result = await Comment.findByIdAndUpdate(
+    { _id: commentId },
+    { content: reqData.content }
+  );
+  return result;
+};
+
 export default {
   createComment,
   findComments,
   checkWriter,
   checkComment,
   removeComment,
+  updateComment,
 };

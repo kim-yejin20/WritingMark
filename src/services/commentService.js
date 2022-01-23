@@ -25,10 +25,16 @@ const removeComment = async (postId, commentId) => {
   return result;
 };
 
+const updateComment = async (commentId, reqData) => {
+  const result = await commentDAO.updateComment(commentId, reqData);
+  return result;
+};
+
 export default {
   createComment,
   findComments,
   checkWriter,
   checkComment,
   removeComment,
+  updateComment,
 };

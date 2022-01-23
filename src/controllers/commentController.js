@@ -44,7 +44,6 @@ const removeComment = async (req, res) => {
     const commentId = req.params.commentId;
 
     const checkComment = await commentService.checkComment(postId, commentId);
-    console.log(checkComment);
     if (checkComment == false) errorGenerator('이미 삭제된 댓글입니다.', 401);
 
     const checkWriter = await commentService.checkWriter(commentId);
@@ -53,7 +52,6 @@ const removeComment = async (req, res) => {
     if (user != writer) errorGenerator('삭제 권한 없음', 403);
 
     const result = await commentService.removeComment(postId, commentId);
-    console.log(result);
 
     res.status(200).json({
       status: 'success',
@@ -67,4 +65,27 @@ const removeComment = async (req, res) => {
   }
 };
 
-export default { createComment, findComments, removeComment };
+const updateComment = async (req, res) => {
+  try {ㅎ
+    const commentId = req.params.commentId;
+    const reqData = req.body;
+
+    const checkWriter = await commentService.checkWriter(commentId);
+    const user = req.user._id.toString();
+    const writer = checkWriter.writer._id.toString();
+    if (user != writer) errorGenerator('수정 권한 없음', 403);
+
+    const result = await commentService.updateComment(commentId, reqData);
+    res.status(200).json({
+      status: 'success',
+      result,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+export default { createComment, findComments, removeComment, updateComment };

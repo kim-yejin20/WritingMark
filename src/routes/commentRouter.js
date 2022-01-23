@@ -11,4 +11,10 @@ router.delete(
   validateToken,
   commentController.removeComment
 );
+router.patch(
+  '/:postId/comment/:commentId',
+  validateToken,
+  commentController.updateComment
+);
+
 export default router;
