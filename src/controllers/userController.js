@@ -3,6 +3,12 @@ import { userDAO } from '../models';
 import { userService } from '../services';
 import { bcrypt, crypto, errorGenerator } from '../utils';
 import jwt from '../utils/jwt';
+import dotenv from 'dotenv';
+import passport from 'passport';
+import { Strategy as KakaoStrategy } from 'passport-kakao';
+// import kakaoPassport from 'passport-kakao';
+
+// const KakaoStrategy = kakaoPassport.Strategy;
 
 const user = async (req, res) => {
   try {
@@ -65,6 +71,26 @@ const login = async (req, res) => {
       status: 'success',
       token: token,
     });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+const kakao = async (req, res) => {
+  try {
+    passport.use(
+      new KakaoStrategy(
+        {
+          clientID: process.env.KAKAO_CLIENT_ID,
+          clientSecret: '',
+          callbackURL: 'http://localhost:8080/user/kakao/callback',
+        },
+        kakaoLoginCallback
+      )
+    );
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -267,6 +293,7 @@ export default {
   user,
   register,
   login,
+  kakao,
   userInfo,
   changeUserInfo,
   changeUserPassword,

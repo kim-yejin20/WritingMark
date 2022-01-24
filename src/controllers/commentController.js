@@ -66,7 +66,7 @@ const removeComment = async (req, res) => {
 };
 
 const updateComment = async (req, res) => {
-  try {ㅎ
+  try {
     const commentId = req.params.commentId;
     const reqData = req.body;
 

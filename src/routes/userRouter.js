@@ -5,13 +5,24 @@ import { changePwValidator } from '../../middlewares/validation';
 import { validateToken } from '../../middlewares/validateToken';
 import { userController } from '../controllers';
 import { upload } from '../../middlewares/upload';
+import passport from 'passport';
 
 const router = express.Router();
 
 router.get('', validateToken, userController.user);
 router.post('/register', [registerLoginValidator], userController.register); //회원가입
 router.post('/login', [registerLoginValidator], userController.login);
-// router.get('/info', validateToken, userController.userInfo);
+
+//카카오 소셜로그인
+router.get('/kakao', passport.authenticate('kakao'));
+router.get(
+  'kakao/callback',
+  passport.authenticate('kakao', { failureRedirect: '/kakao' }),
+  (req, res) => {
+    res.redirect(`/${req.user.user_id}`);
+  }
+);
+
 router.get('/info/edit', validateToken, userController.userInfo);
 router.patch(
   '/info/edit',
