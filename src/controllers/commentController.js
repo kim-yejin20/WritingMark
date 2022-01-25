@@ -3,8 +3,10 @@ import { errorGenerator } from '../utils';
 
 const createComment = async (req, res) => {
   try {
+    console.log('here!');
     const postId = req.params.postId;
     console.log(postId);
+    console.log(req.body);
     const result = await commentService.createComment(
       req.user,
       postId,
@@ -55,7 +57,6 @@ const removeComment = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      result,
     });
   } catch (err) {
     res.status(400).json({

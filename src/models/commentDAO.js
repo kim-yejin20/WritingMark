@@ -10,14 +10,24 @@ const createComment = async (user, postId, content) => {
   );
 
   console.log('postObj???', postObj);
-  const result = await new Comment({
+  console.log(postObj._id);
+  const post_id = postObj._id;
+
+  const addComment = await new Comment({
     postId: postId,
-    post_id: postObj._id,
+    post_id: post_id,
     writer: user._id,
     content: content,
     createdAt: moment.localTime,
   }).save();
 
+  console.log('addComment?', addComment);
+
+  const result = await Comment.findById({ _id: addComment._id }).populate(
+    'writer',
+    'nickname profileImage'
+  );
+  console.log(result);
   return result;
 };
 
@@ -25,7 +35,7 @@ const findComments = async (postId) => {
   const result = await Comment.find({ postId: postId })
     .select('_id writer content createdAt')
     .populate('writer', 'nickname profileImage')
-    .sort({ createdAt: -1 });
+    .sort({ _id: -1 });
   return result;
 };
 
@@ -55,7 +65,8 @@ const removeComment = async (postId, commentId) => {
 const updateComment = async (commentId, reqData) => {
   const result = await Comment.findByIdAndUpdate(
     { _id: commentId },
-    { content: reqData.content }
+    { content: reqData.content },
+    { new: true }
   );
   return result;
 };

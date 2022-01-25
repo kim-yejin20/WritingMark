@@ -27,7 +27,7 @@ router.get('/info/edit', validateToken, userController.userInfo);
 router.patch(
   '/info/edit',
   validateToken,
-  [changeInfoValidator],
+  // [changeInfoValidator],
   upload.single('user_profile'),
   userController.changeUserInfo
 );

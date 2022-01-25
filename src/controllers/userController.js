@@ -116,7 +116,16 @@ const userInfo = async (req, res) => {
 
 const changeUserInfo = async (req, res) => {
   try {
+    console.log('회원 정보 수정하기 컨트롤러');
+    // console.log(req);
+    // console.log('야아아아');
+    // console.log('file?', file);
+    console.log('req.file?', req.file);
+    const file = req.file;
+    const reqData = req.body;
+    console.log(req.ValidationError);
     if (req.ValidationError) {
+      console.log('에러가 있음니다');
       return res.status(409).json({
         status: 'fail',
         message: req.ValidationError,
@@ -124,6 +133,7 @@ const changeUserInfo = async (req, res) => {
     }
 
     if (file != undefined) {
+      console.log('이미지가 없을때');
       //프로필 이미지 변경
       const result = await userService.changeUserInfoWithImg(
         req.user,
