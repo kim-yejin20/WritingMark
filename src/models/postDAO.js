@@ -130,7 +130,7 @@ const findPostHot = async (lastId) => {
             },
           ],
         }
-      : 2
+      : {}
   )
     .sort({ 'count.bookmark': -1, _id: -1 })
     .populate('writer', 'nickname profileImage')
