@@ -44,17 +44,123 @@ const createPostWithImg = async (user, data, file) => {
   return result;
 };
 
-const findPostNew = async () => {
-  const result = await Post.find({})
+const findPostNew = async (lastId) => {
+  const result = await Post.find(lastId ? { _id: { $lt: lastId } } : {})
     .populate('writer', 'nickname profileImage')
-    .sort({ postId: -1 });
+    .sort({ _id: -1 })
+    .limit(5);
+
   return result;
 };
 
-const findPostHot = async () => {
-  const result = await Post.find({})
+const findPostHot = async (lastId) => {
+  // const result = await Post.find(lastId ? { _id: { $lt: lastId } } : {})
+  //   .populate('writer', 'nickname profileImage')
+  //   .sort({ 'count.bookmark': -1 })
+  //   .limit(5);
+
+  let lastObjId;
+  if (lastId) {
+    lastObjId = await Post.findById({ _id: lastId });
+    console.log(lastObjId);
+    console.log('lastId의 카운트', lastObjId.count.bookmark);
+  }
+
+  const result = await Post.find(
+    lastId
+      ? {
+          'count.bookmark': { $lte: lastObjId.count.bookmark },
+          _id: { $lt: lastId },
+        }
+      : {}
+  )
+    .sort({ 'count.bookmark': -1, _id: -1 })
     .populate('writer', 'nickname profileImage')
-    .sort({ 'count.bookmark': -1 });
+    .limit(5);
+
+  //   db.posts
+  // .find(
+  // 'CREATION_DATE' : {'$lt' : (CreationDate Cursor)}
+  // { $or : [ { $and : [{'CREATION_DATE' : (CreationDate Cursor)},{'id' : {'$gt' : (Id Cursor)}}]}]}
+  // ).limit(5)
+
+  // const items = db.items.find({
+  //   $or: [{
+  //     updatedAt: { $lt: nextUpdated }
+  //   }, {
+  //     updatedAt: nextUpdated,
+  //     _id: { $lt: nextId }
+  //   }]
+  // })
+
+  // const items = db.items.find({
+  //   $or: [{
+  //     launchDate: { $lt: nextLaunchDate }
+  //   }, {
+  //     // If the launchDate is an exact match, we need a tiebreaker, so we use the _id field from the cursor.
+  //     launchDate: nextLaunchDate,
+  //   _id: { $lt: nextId }
+  //   }]
+
+  const test2 = await Post.find(
+    // 16,15,14,13,12 / 14,12,2,1,6 / 6,5,4,17,7
+    lastId
+      ? {
+          $or: [
+            { 'count.bookmark': { $lte: lastObjId.count.bookmark } },
+            { 'count.bookmark': lastObjId.count.bookmark, _id: lastObjId },
+          ],
+        }
+      : {}
+  )
+    .sort({ 'count.bookmark': -1, _id: -1 })
+    .populate('writer', 'nickname profileImage')
+    .limit(5);
+
+  const test3 = await Post.find(
+    // 첫번째 count.bookmark $lte, 두번째 _id $gt일때 16,15,14,13,12 / 14,12,2,1,6 / 6,5,4,17,7
+    // 첫번째 count.bookmark $lt, 두번째 count.bookmark : x, _id : $lt -> 다 불러오는듯
+    lastId
+      ? {
+          $or: [
+            { 'count.bookmark': { $lt: lastObjId.count.bookmark } },
+            {
+              'count.bookmark': lastObjId.count.bookmark,
+              _id: { $lt: lastObjId },
+            },
+          ],
+        }
+      : 2
+  )
+    .sort({ 'count.bookmark': -1, _id: -1 })
+    .populate('writer', 'nickname profileImage')
+    .limit(5);
+
+  const test = await Post.find(
+    // 16,15,14,13,12 계속 반복해서 줌
+    lastId
+      ? {
+          $or: [
+            { 'count.bookmark': { $lte: lastObjId.count.bookmark } },
+            {
+              $and: [
+                ({ 'count.bookmark': { $lte: lastObjId.count.bookmark } },
+                { _id: { $gt: lastObjId } }),
+              ],
+            },
+          ],
+        }
+      : {}
+  )
+    .sort({ 'count.bookmark': -1, _id: -1 })
+    .populate('writer', 'nickname profileImage')
+    .limit(5);
+
+  return test3;
+};
+
+const countPost = async () => {
+  const result = await Post.count();
   return result;
 };
 
@@ -88,8 +194,6 @@ const removePost = async (postId) => {
   const result = await Post.findOneAndDelete({ postId: postId });
   return result;
 };
-
-// -------------------
 
 const checkPostImg = async (postId) => {
   const result = await Post.findOne({ postId: postId }).select('image');
@@ -140,7 +244,7 @@ const updatePostRemove = async (postId, data) => {
       createdAt: moment.localTime,
       info_title: data.info_title,
       info_url: data.info_url,
-      $unset: { image: '' }, //이렇게 수정하고 나면 undefined으로 되나?
+      $unset: { image: '' },
     }
   );
   return result;
@@ -151,6 +255,7 @@ export default {
   createPostWithImg,
   findPostNew,
   findPostHot,
+  countPost,
   findPostsCategory,
   checkPostId,
   findDetailInfo,

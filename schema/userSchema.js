@@ -18,7 +18,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please enter password'],
+    // required: [true, 'Please enter password'],
     minlength: [7, 'Password must be at least 7 characters'],
   },
   social_id: {

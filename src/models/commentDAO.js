@@ -21,13 +21,10 @@ const createComment = async (user, postId, content) => {
     createdAt: moment.localTime,
   }).save();
 
-  console.log('addComment?', addComment);
-
   const result = await Comment.findById({ _id: addComment._id }).populate(
     'writer',
     'nickname profileImage'
   );
-  console.log(result);
   return result;
 };
 

@@ -6,6 +6,8 @@ import jwt from '../utils/jwt';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
+import { checkDuplicate } from '../../middlewares/checkDuplicate';
+import axios from 'axios'
 // import kakaoPassport from 'passport-kakao';
 
 // const KakaoStrategy = kakaoPassport.Strategy;
@@ -81,16 +83,34 @@ const login = async (req, res) => {
 
 const kakao = async (req, res) => {
   try {
-    passport.use(
-      new KakaoStrategy(
-        {
-          clientID: process.env.KAKAO_CLIENT_ID,
-          clientSecret: '',
-          callbackURL: 'http://localhost:8080/user/kakao/callback',
-        },
-        kakaoLoginCallback
-      )
-    );
+    const accessToken = req.headers.authorization;
+
+    const kakao_profile = await axios({ method : 'post', url : 'https://kapi.kakao.com/v2/user/me', headers :{
+      Authorization : `Bearer ${accessToken}`
+    } })
+
+    const kakaoId = kakao_profile.data.id
+    const platform = 'kakao'
+    const email = kakao_profile.data.kakao_account.email;
+    const socialUser = await userService.checkUserSocial(kakaoId, platform);
+
+    if (socialUser == null) {
+      const randomName = await crypto.makeRandomNickname();
+      const register = await userService.socialLogin(email, randomName, kakaoId, platform); 
+      const token = await jwt.signToken(register._id);
+      return res.status(201).json({
+        status: 'success',
+        token
+      });
+    }
+
+    const token = await jwt.signToken(socialUser._id);
+
+    res.status(200).json({
+      status: 'success',
+      token
+    });
+
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -117,6 +137,8 @@ const userInfo = async (req, res) => {
 const changeUserInfo = async (req, res) => {
   try {
     console.log('회원 정보 수정하기 컨트롤러');
+    console.log('test', req.body);
+    const checkTest = await checkDuplicate(req);
     // console.log(req);
     // console.log('야아아아');
     // console.log('file?', file);
@@ -124,7 +146,14 @@ const changeUserInfo = async (req, res) => {
     const file = req.file;
     const reqData = req.body;
     console.log(req.ValidationError);
-    if (req.ValidationError) {
+    // if (req.ValidationError) {
+    //   console.log('에러가 있음니다');
+    //   return res.status(409).json({
+    //     status: 'fail',
+    //     message: req.ValidationError,
+    //   });
+    // }
+    if (checkTest !== null) {
       console.log('에러가 있음니다');
       return res.status(409).json({
         status: 'fail',
@@ -178,7 +207,7 @@ const findUserPost = async (req, res) => {
 const changeUserPassword = async (req, res) => {
   try {
     // const userEmail = await userService.checkUserEmail(req.body.email);
-    const userInfo = await userService.checkUserId(req.user);
+    const userInfo = await userService.checkUserId(req.user._id);
 
     const isSamePW = await bcrypt.comparePassword(
       req.body.password,
@@ -186,13 +215,13 @@ const changeUserPassword = async (req, res) => {
     );
     if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
 
-    if (req.body.newPassword == req.body.checkPassword)
+    if (req.body.newPassword != req.body.newPasswordCheck)
       errorGenerator(
         '새로운 비밀번호와 비밀번호 확인 입력이 같지 않습니다.',
         401
       );
-    const hashPassword = await bcrypt.encryptPassword(req.body.password, 10);
-    req.body.password = hashPassword;
+    const hashPassword = await bcrypt.encryptPassword(req.body.newPassword, 10);
+    req.body.newPassword = hashPassword;
     const result = await userService.changeUserPassword(req.user, req.body);
 
     res.status(200).json({

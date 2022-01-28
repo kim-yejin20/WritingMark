@@ -11,16 +11,17 @@ const createNewPostWithImg = async (user, data, file) => {
   return result;
 };
 
-const findPostsTab = async (tab) => {
-  console.log('tab은?', tab);
+const findPostsTab = async (tab, lastId) => {
   if (tab == 'new') {
-    return await postDAO.findPostNew();
+    return await postDAO.findPostNew(lastId);
   } else if (tab == 'hot') {
-    return await postDAO.findPostHot();
+    return await postDAO.findPostHot(lastId);
   }
+};
 
-  // const result = await postDAO.findPostNew(tab);
-  // return result;
+const countPost = async () => {
+  const result = await postDAO.countPost();
+  return result;
 };
 
 const findPostsCategory = async (category) => {
@@ -109,6 +110,7 @@ export default {
   createNewPost,
   createNewPostWithImg,
   findPostsTab,
+  countPost,
   findPostsCategory,
   checkPostId,
   findDetailInfo,

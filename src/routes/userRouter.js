@@ -14,7 +14,8 @@ router.post('/register', [registerLoginValidator], userController.register); //�
 router.post('/login', [registerLoginValidator], userController.login);
 
 //카카오 소셜로그인
-router.get('/kakao', passport.authenticate('kakao'));
+router.get('/kakao', userController.kakao);
+// router.get('/kakao', passport.authenticate('kakao'));
 router.get(
   'kakao/callback',
   passport.authenticate('kakao', { failureRedirect: '/kakao' }),

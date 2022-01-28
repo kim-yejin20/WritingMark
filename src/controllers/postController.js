@@ -8,7 +8,6 @@ const createPost = async (req, res) => {
     const user = req.user;
     const data = req.body;
     const file = req.file;
-    console.log('data는?', data);
     if (req.user == null) errorGenerator('로그인후 가능합니다', 403);
     if (file !== undefined) {
       const result = await postService.createNewPostWithImg(user, data, file);
@@ -33,15 +32,21 @@ const createPost = async (req, res) => {
 const findPostTab = async (req, res) => {
   try {
     const tab = req.query.tab;
+    const { lastId } = req.query;
 
+    console.log(req.query);
+    console.log(lastId);
     const tabArray = ['new', 'hot'];
     const ArrReturn = tabArray.includes(tab);
     if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
 
-    const result = await postService.findPostsTab(tab);
+    const result = await postService.findPostsTab(tab, lastId);
+    const totalPostCount = await postService.countPost();
 
+    if (result.length === 0) errorGenerator('게시글 없음', 400);
     res.status(200).json({
       status: 'success',
+      count: totalPostCount,
       result,
     });
   } catch (err) {
@@ -54,7 +59,6 @@ const findPostTab = async (req, res) => {
 
 const findPostCategory = async (req, res) => {
   try {
-    console.log('controller');
     const category = req.params.category;
 
     const cateArray = [

@@ -21,14 +21,20 @@ const checkUserId = async (_id) => {
   return result;
 };
 
+const checkUserSocial = async (kakaoId, platform) => {
+  const result = await userDAO.checkUserSocial(kakaoId, platform);
+  return result
+}
+
 const changeUserInfoWithImg = async (user, reqData, file) => {
   const result = await userDAO.changeUserInfoWithImg(user, reqData, file);
   const user_profile = result.profileImage;
+  console.log(user_profile);
   if (result.profileImage != 'basicProfileImage.png') {
     s3.deleteObject(
       {
         Bucket: 'writingmark',
-        Key: `post/${user_profile}`,
+        Key: `user/${user_profile}`,
       },
       (err, data) => {
         if (err) {
@@ -58,7 +64,7 @@ const changeUserInfo = async (user, reqData) => {
   s3.deleteObject(
     {
       Bucket: 'writingmark',
-      Key: `post/${user_profile}`,
+      Key: `user/${user_profile}`,
     },
     (err, data) => {
       if (err) {
@@ -80,6 +86,11 @@ const register = async (reqData) => {
   const result = await userDAO.createUser(reqData);
   return result;
 };
+
+const socialLogin = async (email, randomName, kakaoId, platform) => {
+  const result = await userDAO.createSocialUser(email, randomName, kakaoId, platform);
+  return result;
+}
 
 const findUserPost = async (user) => {
   const result = await userDAO.findUserPost(user);
@@ -116,10 +127,12 @@ export default {
   checkUserNickname,
   checkUserinfo,
   checkUserId,
+  checkUserSocial,
   changeUserInfoWithImg,
   changeUserInfo,
   changeUserPassword,
   register,
+  socialLogin,
   findUserPost,
   createUserBookmark,
   findUserBookmark,

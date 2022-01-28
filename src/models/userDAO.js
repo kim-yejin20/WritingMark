@@ -17,12 +17,19 @@ const checkUserToken = async (id) => {
 };
 
 const checkUserId = async (id) => {
-  return await User.findById({ _id: id }).select('_id password');
+  return await User.findById({ _id: id}).select('_id password');
 };
 
 const checkUserInfo = async (id) => {
   return await User.findOne({ _id: id }, 'email nickname profileImage');
 };
+
+const checkUserSocial = async(kakaoId, platform) => {
+  const result = await User.findOne({
+    $and: [{ social_id: kakaoId }, { social_platform: platform }],
+  });
+  return result
+}
 
 const changeUserInfoWithImg = async (user, reqData, file) => {
   const result = await User.findByIdAndUpdate(
@@ -60,7 +67,7 @@ const changeBasicImage = async (user, reqData) => {
 const changeUserPassword = async (user, reqData) => {
   const result = await User.findByIdAndUpdate(
     { _id: user._id },
-    { password: reqData.password },
+    { password: reqData.newPassword },
     { new: true }
   );
   return result;
@@ -76,6 +83,18 @@ const createUser = async (reqData) => {
   }).save();
   return result;
 };
+
+const createSocialUser = async (email, randomName, kakaoId, platform) => {
+  const result = await new User({
+    nickname : randomName,
+    email : email, 
+    social_id : kakaoId,
+    social_platform : platform,
+    createdAt : moment.localTime,
+    profileImage : 'basicProfileImage.png',
+  }).save();
+  return result;
+}
 
 const findUserPost = async (user) => {
   return await Post.find({ writer: user })
@@ -148,11 +167,13 @@ export default {
   checkUserToken,
   checkUserId,
   checkUserInfo,
+  checkUserSocial,
   changeUserInfoWithImg,
   changeNotImage,
   changeBasicImage,
   changeUserPassword,
   createUser,
+  createSocialUser,
   findUserPost,
   createUserBookmark,
   findUserBookmark,
