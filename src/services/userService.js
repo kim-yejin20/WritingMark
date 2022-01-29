@@ -23,8 +23,8 @@ const checkUserId = async (_id) => {
 
 const checkUserSocial = async (kakaoId, platform) => {
   const result = await userDAO.checkUserSocial(kakaoId, platform);
-  return result
-}
+  return result;
+};
 
 const changeUserInfoWithImg = async (user, reqData, file) => {
   const result = await userDAO.changeUserInfoWithImg(user, reqData, file);
@@ -88,12 +88,22 @@ const register = async (reqData) => {
 };
 
 const socialLogin = async (email, randomName, kakaoId, platform) => {
-  const result = await userDAO.createSocialUser(email, randomName, kakaoId, platform);
+  const result = await userDAO.createSocialUser(
+    email,
+    randomName,
+    kakaoId,
+    platform
+  );
   return result;
-}
+};
 
-const findUserPost = async (user) => {
-  const result = await userDAO.findUserPost(user);
+const findUserPost = async (user, lastId) => {
+  const result = await userDAO.findUserPost(user, lastId);
+  return result;
+};
+
+const countTotal = async (user, about) => {
+  const result = await userDAO.countTotal(user, about);
   return result;
 };
 
@@ -102,8 +112,8 @@ const createUserBookmark = async (user_id, postId) => {
   return result;
 };
 
-const findUserBookmark = async (user) => {
-  const result = await userDAO.findUserBookmark(user);
+const findUserBookmark = async (user, lastId) => {
+  const result = await userDAO.findUserBookmark(user, lastId);
   return result;
 };
 
@@ -134,6 +144,7 @@ export default {
   register,
   socialLogin,
   findUserPost,
+  countTotal,
   createUserBookmark,
   findUserBookmark,
   removeUserBookmark,

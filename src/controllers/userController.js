@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { checkDuplicate } from '../../middlewares/checkDuplicate';
-import axios from 'axios'
+import axios from 'axios';
 // import kakaoPassport from 'passport-kakao';
 
 // const KakaoStrategy = kakaoPassport.Strategy;
@@ -85,22 +85,31 @@ const kakao = async (req, res) => {
   try {
     const accessToken = req.headers.authorization;
 
-    const kakao_profile = await axios({ method : 'post', url : 'https://kapi.kakao.com/v2/user/me', headers :{
-      Authorization : `Bearer ${accessToken}`
-    } })
+    const kakao_profile = await axios({
+      method: 'post',
+      url: 'https://kapi.kakao.com/v2/user/me',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-    const kakaoId = kakao_profile.data.id
-    const platform = 'kakao'
+    const kakaoId = kakao_profile.data.id;
+    const platform = 'kakao';
     const email = kakao_profile.data.kakao_account.email;
     const socialUser = await userService.checkUserSocial(kakaoId, platform);
 
     if (socialUser == null) {
       const randomName = await crypto.makeRandomNickname();
-      const register = await userService.socialLogin(email, randomName, kakaoId, platform); 
+      const register = await userService.socialLogin(
+        email,
+        randomName,
+        kakaoId,
+        platform
+      );
       const token = await jwt.signToken(register._id);
       return res.status(201).json({
         status: 'success',
-        token
+        token,
       });
     }
 
@@ -108,9 +117,8 @@ const kakao = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      token
+      token,
     });
-
   } catch (err) {
     res.status(400).json({
       status: 'fail',
@@ -136,23 +144,11 @@ const userInfo = async (req, res) => {
 
 const changeUserInfo = async (req, res) => {
   try {
-    console.log('회원 정보 수정하기 컨트롤러');
-    console.log('test', req.body);
     const checkTest = await checkDuplicate(req);
-    // console.log(req);
-    // console.log('야아아아');
-    // console.log('file?', file);
-    console.log('req.file?', req.file);
+
     const file = req.file;
     const reqData = req.body;
-    console.log(req.ValidationError);
-    // if (req.ValidationError) {
-    //   console.log('에러가 있음니다');
-    //   return res.status(409).json({
-    //     status: 'fail',
-    //     message: req.ValidationError,
-    //   });
-    // }
+
     if (checkTest !== null) {
       console.log('에러가 있음니다');
       return res.status(409).json({
@@ -191,9 +187,14 @@ const changeUserInfo = async (req, res) => {
 const findUserPost = async (req, res) => {
   try {
     if (req.user == null) errorGenerator('조회 권한 없음', 403);
-    const result = await userService.findUserPost(req.user);
+    const { lastId } = req.query;
+    console.log(req.query);
+    const about = 'post';
+    const result = await userService.findUserPost(req.user, lastId);
+    const postCount = await userService.countTotal(req.user, about);
     res.status(200).json({
       status: 'success',
+      count: postCount,
       result,
     });
   } catch (err) {
@@ -263,10 +264,16 @@ const createUserBookmark = async (req, res) => {
 const findUserBookmark = async (req, res) => {
   // 유저가 북마크한 글
   try {
-    const postId = req.params.postId;
-    const result = await userService.findUserBookmark(req.user, postId);
+    const { lastId } = req.query;
+    const about = 'bookmark';
+    console.log(req.query);
+    console.log('user??', req.user);
+    const result = await userService.findUserBookmark(req.user, lastId);
+    const bookmarkCount = await userService.countTotal(about);
+    console.log('!!!!!!!!!!!!!!!!', bookmarkCount.length);
     res.status(200).json({
       status: 'success',
+      count: bookmarkCount.length,
       result,
     });
   } catch (err) {
@@ -304,7 +311,6 @@ const removeUserBookmark = async (req, res) => {
 
 const removeUserInfo = async (req, res) => {
   try {
-    // 이거 아직 안끝남 !!
     const userInfo = await userService.checkUserId(req.user._id);
 
     const isSamePW = await bcrypt.comparePassword(

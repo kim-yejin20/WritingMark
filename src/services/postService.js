@@ -19,13 +19,13 @@ const findPostsTab = async (tab, lastId) => {
   }
 };
 
-const countPost = async () => {
-  const result = await postDAO.countPost();
+const countPost = async (category) => {
+  const result = await postDAO.countPost(category);
   return result;
 };
 
-const findPostsCategory = async (category) => {
-  const result = await postDAO.findPostsCategory(category);
+const findPostsCategory = async (category, lastId) => {
+  const result = await postDAO.findPostsCategory(category, lastId);
   return result;
 };
 

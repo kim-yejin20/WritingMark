@@ -34,8 +34,6 @@ const findPostTab = async (req, res) => {
     const tab = req.query.tab;
     const { lastId } = req.query;
 
-    console.log(req.query);
-    console.log(lastId);
     const tabArray = ['new', 'hot'];
     const ArrReturn = tabArray.includes(tab);
     if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
@@ -59,7 +57,10 @@ const findPostTab = async (req, res) => {
 
 const findPostCategory = async (req, res) => {
   try {
-    const category = req.params.category;
+    const category = req.query.categoryname;
+    const { lastId } = req.query;
+
+    console.log(req.query);
 
     const cateArray = [
       'web-content',
@@ -72,9 +73,13 @@ const findPostCategory = async (req, res) => {
     const ArrReturn = cateArray.includes(category);
     if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
 
-    const result = await postService.findPostsCategory(category);
+    const result = await postService.findPostsCategory(category, lastId);
+    const totalPostCount = await postService.countPost(category);
+
+    // console.log(result);
     res.status(200).json({
       status: 'success',
+      count: totalPostCount,
       result,
     });
   } catch (err) {

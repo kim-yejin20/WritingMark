@@ -17,19 +17,19 @@ const checkUserToken = async (id) => {
 };
 
 const checkUserId = async (id) => {
-  return await User.findById({ _id: id}).select('_id password');
+  return await User.findById({ _id: id }).select('_id password');
 };
 
 const checkUserInfo = async (id) => {
   return await User.findOne({ _id: id }, 'email nickname profileImage');
 };
 
-const checkUserSocial = async(kakaoId, platform) => {
+const checkUserSocial = async (kakaoId, platform) => {
   const result = await User.findOne({
     $and: [{ social_id: kakaoId }, { social_platform: platform }],
   });
-  return result
-}
+  return result;
+};
 
 const changeUserInfoWithImg = async (user, reqData, file) => {
   const result = await User.findByIdAndUpdate(
@@ -86,20 +86,71 @@ const createUser = async (reqData) => {
 
 const createSocialUser = async (email, randomName, kakaoId, platform) => {
   const result = await new User({
-    nickname : randomName,
-    email : email, 
-    social_id : kakaoId,
-    social_platform : platform,
-    createdAt : moment.localTime,
-    profileImage : 'basicProfileImage.png',
+    nickname: randomName,
+    email: email,
+    social_id: kakaoId,
+    social_platform: platform,
+    createdAt: moment.localTime,
+    profileImage: 'basicProfileImage.png',
   }).save();
   return result;
-}
+};
 
-const findUserPost = async (user) => {
-  return await Post.find({ writer: user })
-    .populate('writer', 'nickname profileImage')
-    .sort({ postId: -1 });
+const findUserPost = async (user, lastId) => {
+  const result = await Post.find(
+    lastId
+      ? { $and: [{ _id: { $lt: lastId } }, { writer: user }] }
+      : { writer: user }
+  )
+    .sort({ _id: -1 })
+    .limit(5)
+    .populate('writer', 'nickname profileImage');
+  return result;
+};
+
+const countTotal = async (user, about) => {
+  // if (about == 'post') {
+  //   console.log('about?', about);
+  //   const result = await Post.find({ writer: user._id }).count();
+  //   return result;
+  // }
+  // const array = await Post.find({ userBookmark: user._id });
+  // const result = array.length;
+  // console.log(result);
+
+  // const result = await Post.find(
+  //   about == 'post' ? { writer: user._id } : { userBookmark: user._id }
+  // ).count();
+
+  // const result = await Post.find(
+  //   about == 'bookmark' ? { userBookmark: user._id } : { writer: user._id }
+  // ).count();
+
+  // const test3 = await Post.aggregate({
+  //   $project: { name: 1, telephoneCount: { $size: '$telephone' } },
+  // });
+
+  const test6 = await Post.aggregate([
+    { $match: { userBookmark: user._id } },
+    { $project: { count: { $size: '$userBookmark' } } },
+  ]).exec(function (err, result) {
+    console.log(result);
+    console.log('????????????????', result.length);
+    return result.length;
+  });
+
+  // const test2 = await Post.aggregate([
+  //   { $project: { count: { $size: { userBookmark: user._id } } } },
+  // ]);
+  // console.log('user', user);
+  // const test3 = await Post.find({ userBookmark: user._id });
+  // console.log(test3);
+  // console.log(test3.length);
+
+  // const count = test3.length;
+  // console.log(count);
+
+  return test6;
 };
 
 const createUserBookmark = async (userId, postId) => {
@@ -114,11 +165,15 @@ const createUserBookmark = async (userId, postId) => {
   return result;
 };
 
-const findUserBookmark = async (user) => {
-  const result = await Post.find({ userBookmark: user._id }).populate(
-    'writer',
-    'nickname profileImage'
-  );
+const findUserBookmark = async (user, lastId) => {
+  const result = await Post.find(
+    lastId
+      ? { $and: [{ _id: { $lt: lastId } }, { userBookmark: user._id }] }
+      : { userBookmark: user._id }
+  )
+    .sort({ _id: -1 })
+    .limit(5)
+    .populate('writer', 'nickname profileImage');
 
   return result;
 };
@@ -175,6 +230,7 @@ export default {
   createUser,
   createSocialUser,
   findUserPost,
+  countTotal,
   createUserBookmark,
   findUserBookmark,
   removeUserBookmark,
