@@ -2,7 +2,6 @@ import User from '../../schema/userSchema';
 import mongoose from 'mongoose';
 import moment from '../utils/moment';
 import Post from '../../schema/postSchema';
-// import Bookmark from '../../schema/bookmarkSchema';
 
 const checkUserEmail = async (email) => {
   return await User.findOne({ email: email });
@@ -130,27 +129,34 @@ const countTotal = async (user, about) => {
   //   $project: { name: 1, telephoneCount: { $size: '$telephone' } },
   // });
 
-  const test6 = await Post.aggregate([
-    { $match: { userBookmark: user._id } },
-    { $project: { count: { $size: '$userBookmark' } } },
-  ]).exec(function (err, result) {
-    console.log(result);
-    console.log('????????????????', result.length);
-    return result.length;
-  });
+  // const test6 = await Post.aggregate([
+  //   { $match: { userBookmark: user._id } },
+  //   { $project: { count: { $size: '$userBookmark' } } },
+  // ]);
 
+  Post.find({ author: { $in: userIds } })
+    .sort('-created') // or .sort({ field: 'asc', created: -1 });
+    .exec(function (err, data) {
+      if (err) {
+        return console.log(err);
+      } else {
+        return console.log(data);
+      }
+    });
+
+  const test7 = await Post.aggregate([
+    { $match: { 'userBookmark._id': user._id } },
+    { $project: { count: { $size: '$userBookmark' } } },
+  ]);
+
+  console.log(test7);
+
+  //아예안됨
   // const test2 = await Post.aggregate([
   //   { $project: { count: { $size: { userBookmark: user._id } } } },
   // ]);
-  // console.log('user', user);
-  // const test3 = await Post.find({ userBookmark: user._id });
-  // console.log(test3);
-  // console.log(test3.length);
 
-  // const count = test3.length;
-  // console.log(count);
-
-  return test6;
+  return test7;
 };
 
 const createUserBookmark = async (userId, postId) => {

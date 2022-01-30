@@ -9,8 +9,6 @@ const createComment = async (user, postId, content) => {
     { new: true }
   );
 
-  console.log('postObj???', postObj);
-  console.log(postObj._id);
   const post_id = postObj._id;
 
   const addComment = await new Comment({

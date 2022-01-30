@@ -248,7 +248,6 @@ const createUserBookmark = async (req, res) => {
 
     if (checkBookmark == true) errorGenerator('이미 북마크 한 글입니다.', 400);
     const result = await userService.createUserBookmark(req.user, postId);
-    console.log('북마크 하기 결과', result);
     res.status(200).json({
       status: 'success',
       result,
@@ -270,10 +269,10 @@ const findUserBookmark = async (req, res) => {
     console.log('user??', req.user);
     const result = await userService.findUserBookmark(req.user, lastId);
     const bookmarkCount = await userService.countTotal(about);
-    console.log('!!!!!!!!!!!!!!!!', bookmarkCount.length);
+    console.log('!!!!!!!!!!!!!!!!', bookmarkCount);
     res.status(200).json({
       status: 'success',
-      count: bookmarkCount.length,
+      count: bookmarkCount,
       result,
     });
   } catch (err) {
