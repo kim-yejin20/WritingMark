@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, check } from 'express-validator';
 import { userDAO } from '../models';
 import { userService } from '../services';
 import { bcrypt, crypto, errorGenerator } from '../utils';
@@ -245,6 +245,8 @@ const createUserBookmark = async (req, res) => {
 
     //해당 게시글에 유저가 북마크 했는지 확인
     const checkBookmark = await userService.checkBookmark(req.user, postId);
+    console.log('here~!');
+    console.log(checkBookmark);
 
     if (checkBookmark == true) errorGenerator('이미 북마크 한 글입니다.', 400);
     const result = await userService.createUserBookmark(req.user, postId);

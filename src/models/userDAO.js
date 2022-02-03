@@ -2,6 +2,7 @@ import User from '../../schema/userSchema';
 import mongoose from 'mongoose';
 import moment from '../utils/moment';
 import Post from '../../schema/postSchema';
+import Bookmark from '../../schema/bookmarkSchema';
 
 const checkUserEmail = async (email) => {
   return await User.findOne({ email: email });
@@ -108,6 +109,13 @@ const findUserPost = async (user, lastId) => {
 };
 
 const countTotal = async (user, about) => {
+  if (about == 'post') {
+    const result = await Post.find({ writer: user._id }).count();
+    return result;
+  }
+  const result = await Bookmark.find({ user_id: user._id }).count();
+  return result;
+
   // if (about == 'post') {
   //   console.log('about?', about);
   //   const result = await Post.find({ writer: user._id }).count();
@@ -134,72 +142,97 @@ const countTotal = async (user, about) => {
   //   { $project: { count: { $size: '$userBookmark' } } },
   // ]);
 
-  Post.find({ author: { $in: userIds } })
-    .sort('-created') // or .sort({ field: 'asc', created: -1 });
-    .exec(function (err, data) {
-      if (err) {
-        return console.log(err);
-      } else {
-        return console.log(data);
-      }
-    });
-
-  const test7 = await Post.aggregate([
-    { $match: { 'userBookmark._id': user._id } },
-    { $project: { count: { $size: '$userBookmark' } } },
-  ]);
-
-  console.log(test7);
+  // const test7 = await Post.aggregate([
+  //   { $match: { 'userBookmark._id': user._id } },
+  //   { $project: { count: { $size: '$userBookmark' } } },
+  // ]);
 
   //아예안됨
   // const test2 = await Post.aggregate([
   //   { $project: { count: { $size: { userBookmark: user._id } } } },
   // ]);
-
-  return test7;
 };
 
 const createUserBookmark = async (userId, postId) => {
-  const result = await Post.findOneAndUpdate(
-    { postId: postId },
+  // const result = await Post.findOneAndUpdate(
+  //   { postId: postId },
+  //   {
+  //     $push: { userBookmark: { _id: userId._id } },
+  //     $inc: { 'count.bookmark': 1 },
+  //   },
+  //   { new: true }
+  // );
+
+  const post = await Post.findOneAndUpdate(
     {
-      $push: { userBookmark: { _id: userId._id } },
-      $inc: { 'count.bookmark': 1 },
+      postId: postId,
     },
+    { $inc: { 'count.bookmark': 1 } },
     { new: true }
   );
+
+  const result = await new Bookmark({
+    post_id: post._id,
+    postId: postId,
+    user_id: userId._id,
+    createdAt: moment.localTime,
+  }).save();
+
   return result;
 };
 
 const findUserBookmark = async (user, lastId) => {
-  const result = await Post.find(
+  // const result = await Post.find(
+  //   lastId
+  //     ? { $and: [{ _id: { $lt: lastId } }, { userBookmark: user._id }] }
+  //     : { userBookmark: user._id }
+  // )
+  //   .sort({ _id: -1 })
+  //   .limit(5)
+  //   .populate('writer', 'nickname profileImage');
+
+  const result = await Bookmark.find(
     lastId
       ? { $and: [{ _id: { $lt: lastId } }, { userBookmark: user._id }] }
-      : { userBookmark: user._id }
+      : { user_id: user._id }
   )
     .sort({ _id: -1 })
     .limit(5)
-    .populate('writer', 'nickname profileImage');
+    .populate({
+      path: 'post_id',
+      populate: { path: 'writer', select: 'nickname profileImage' },
+    });
 
   return result;
 };
 
 const removeUserBookmark = async (userId, postId) => {
-  const result = await Post.findOneAndUpdate(
-    { postId: postId },
+  // const result = await Post.findOneAndUpdate(
+  //   { postId: postId },
+  //   {
+  //     $pull: { userBookmark: userId._id },
+  //     $inc: { 'count.bookmark': -1 },
+  //   },
+  //   { new: true }
+  // );
+  const post = await Post.findOneAndUpdate(
     {
-      $pull: { userBookmark: userId._id },
-      $inc: { 'count.bookmark': -1 },
+      postId: postId,
     },
+    { $inc: { 'count.bookmark': -1 } },
     { new: true }
   );
+  const result = await Bookmark.findOneAndRemove({ postId: postId });
 
   return result;
 };
 
 const checkBookmark = async (user_id, postId) => {
-  const result = await Post.exists({
-    $and: [{ userBookmark: user_id._id }, { postId: postId }],
+  // const result = await Post.exists({
+  //   $and: [{ userBookmark: user_id._id }, { postId: postId }],
+  // });
+  const result = await Bookmark.exists({
+    $and: [{ postId: postId }, { user_id: user_id._id }],
   });
   return result;
 };

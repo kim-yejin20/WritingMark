@@ -1,3 +1,4 @@
+import Bookmark from '../../schema/bookmarkSchema';
 import Post from '../../schema/postSchema';
 import TotalCount from '../../schema/totalcountSchema';
 import moment from '../utils/moment';
@@ -49,6 +50,28 @@ const findPostNew = async (lastId) => {
     .populate('writer', 'nickname profileImage')
     .sort({ _id: -1 })
     .limit(5);
+  // .then(function (data) {
+  //   // for (i = 0; (i = data.length); i++) {
+  //   //   let test2 = Bookmark.find({ post_id: data._id }).select('user_id');
+  //   //   console.log(test2);
+  //   // }
+  //   for (let i in data) {
+  //     if (Bookmark.find({ post_id: data[i]._id }).exists()) {
+  //       console.log('true');
+  //     }
+  //   }
+  //   console.log(test2);
+  // });
+  console.log(result);
+
+  // console.log('new찍어보기', result);
+  // console.log('length?', result.length);
+  // const list = [];
+  // for (i = 0; (i = result.length); i++) {
+  //   const test2 = await Bookmark.find({ post_id: result });
+  // }
+  // const test = await Bookmark.find({ post_id: result._id }).select('user_id');
+  // console.log('test?', test);
 
   return result;
 };

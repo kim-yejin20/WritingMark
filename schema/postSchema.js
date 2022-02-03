@@ -52,13 +52,13 @@ const postSchema = new Schema({
       default: 0,
     },
   },
-  userBookmark: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: 'User',
-      index: true, //추가
-    },
-  ],
+  // userBookmark: [
+  //   {
+  //     type: mongoose.Types.ObjectId,
+  //     ref: 'User',
+  //     index: true, //추가
+  //   },
+  // ],
 });
 
 const Post = mongoose.model('Post', postSchema);
