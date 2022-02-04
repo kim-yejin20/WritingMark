@@ -11,11 +11,11 @@ const createNewPostWithImg = async (user, data, file) => {
   return result;
 };
 
-const findPostsTab = async (tab, lastId) => {
+const findPostsTab = async (tab, lastId, user) => {
   if (tab == 'new') {
-    return await postDAO.findPostNew(lastId);
+    return await postDAO.findPostNew(lastId, user);
   } else if (tab == 'hot') {
-    return await postDAO.findPostHot(lastId);
+    return await postDAO.findPostHot(lastId, user);
   }
 };
 
@@ -24,8 +24,8 @@ const countPost = async (category) => {
   return result;
 };
 
-const findPostsCategory = async (category, lastId) => {
-  const result = await postDAO.findPostsCategory(category, lastId);
+const findPostsCategory = async (category, lastId, user) => {
+  const result = await postDAO.findPostsCategory(category, lastId, user);
   return result;
 };
 
@@ -34,8 +34,8 @@ const checkPostId = async (postId) => {
   return result;
 };
 
-const findDetailInfo = async (postId) => {
-  const result = await postDAO.findDetailInfo(postId);
+const findDetailInfo = async (postId, user) => {
+  const result = await postDAO.findDetailInfo(postId, user);
   return result;
 };
 

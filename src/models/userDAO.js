@@ -104,65 +104,30 @@ const findUserPost = async (user, lastId) => {
   )
     .sort({ _id: -1 })
     .limit(5)
-    .populate('writer', 'nickname profileImage');
+    .populate('writer', 'nickname profileImage')
+    .lean();
+
+  for (let i in result) {
+    const state = await Bookmark.exists({
+      $and: [{ post_id: result[i]._id }, { user_id: user }],
+    });
+    result[i].bookmarkState = state;
+  }
   return result;
 };
 
 const countTotal = async (user, about) => {
+  console.log(about);
   if (about == 'post') {
     const result = await Post.find({ writer: user._id }).count();
     return result;
+  } else if (about == 'bookmark') {
+    const result = await Bookmark.find({ user_id: user._id }).count();
+    return result;
   }
-  const result = await Bookmark.find({ user_id: user._id }).count();
-  return result;
-
-  // if (about == 'post') {
-  //   console.log('about?', about);
-  //   const result = await Post.find({ writer: user._id }).count();
-  //   return result;
-  // }
-  // const array = await Post.find({ userBookmark: user._id });
-  // const result = array.length;
-  // console.log(result);
-
-  // const result = await Post.find(
-  //   about == 'post' ? { writer: user._id } : { userBookmark: user._id }
-  // ).count();
-
-  // const result = await Post.find(
-  //   about == 'bookmark' ? { userBookmark: user._id } : { writer: user._id }
-  // ).count();
-
-  // const test3 = await Post.aggregate({
-  //   $project: { name: 1, telephoneCount: { $size: '$telephone' } },
-  // });
-
-  // const test6 = await Post.aggregate([
-  //   { $match: { userBookmark: user._id } },
-  //   { $project: { count: { $size: '$userBookmark' } } },
-  // ]);
-
-  // const test7 = await Post.aggregate([
-  //   { $match: { 'userBookmark._id': user._id } },
-  //   { $project: { count: { $size: '$userBookmark' } } },
-  // ]);
-
-  //아예안됨
-  // const test2 = await Post.aggregate([
-  //   { $project: { count: { $size: { userBookmark: user._id } } } },
-  // ]);
 };
 
 const createUserBookmark = async (userId, postId) => {
-  // const result = await Post.findOneAndUpdate(
-  //   { postId: postId },
-  //   {
-  //     $push: { userBookmark: { _id: userId._id } },
-  //     $inc: { 'count.bookmark': 1 },
-  //   },
-  //   { new: true }
-  // );
-
   const post = await Post.findOneAndUpdate(
     {
       postId: postId,
@@ -182,15 +147,6 @@ const createUserBookmark = async (userId, postId) => {
 };
 
 const findUserBookmark = async (user, lastId) => {
-  // const result = await Post.find(
-  //   lastId
-  //     ? { $and: [{ _id: { $lt: lastId } }, { userBookmark: user._id }] }
-  //     : { userBookmark: user._id }
-  // )
-  //   .sort({ _id: -1 })
-  //   .limit(5)
-  //   .populate('writer', 'nickname profileImage');
-
   const result = await Bookmark.find(
     lastId
       ? { $and: [{ _id: { $lt: lastId } }, { userBookmark: user._id }] }
@@ -201,20 +157,18 @@ const findUserBookmark = async (user, lastId) => {
     .populate({
       path: 'post_id',
       populate: { path: 'writer', select: 'nickname profileImage' },
-    });
+    })
+    .lean();
+
+  for (let i in result) {
+    console.log(result[i]._id);
+    result[i].bookmarkState = true;
+  }
 
   return result;
 };
 
 const removeUserBookmark = async (userId, postId) => {
-  // const result = await Post.findOneAndUpdate(
-  //   { postId: postId },
-  //   {
-  //     $pull: { userBookmark: userId._id },
-  //     $inc: { 'count.bookmark': -1 },
-  //   },
-  //   { new: true }
-  // );
   const post = await Post.findOneAndUpdate(
     {
       postId: postId,
@@ -228,9 +182,6 @@ const removeUserBookmark = async (userId, postId) => {
 };
 
 const checkBookmark = async (user_id, postId) => {
-  // const result = await Post.exists({
-  //   $and: [{ userBookmark: user_id._id }, { postId: postId }],
-  // });
   const result = await Bookmark.exists({
     $and: [{ postId: postId }, { user_id: user_id._id }],
   });

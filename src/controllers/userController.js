@@ -270,7 +270,7 @@ const findUserBookmark = async (req, res) => {
     console.log(req.query);
     console.log('user??', req.user);
     const result = await userService.findUserBookmark(req.user, lastId);
-    const bookmarkCount = await userService.countTotal(about);
+    const bookmarkCount = await userService.countTotal(req.user, about);
     console.log('!!!!!!!!!!!!!!!!', bookmarkCount);
     res.status(200).json({
       status: 'success',

@@ -45,48 +45,31 @@ const createPostWithImg = async (user, data, file) => {
   return result;
 };
 
-const findPostNew = async (lastId) => {
+const findPostNew = async (lastId, user) => {
   const result = await Post.find(lastId ? { _id: { $lt: lastId } } : {})
     .populate('writer', 'nickname profileImage')
     .sort({ _id: -1 })
-    .limit(5);
-  // .then(function (data) {
-  //   // for (i = 0; (i = data.length); i++) {
-  //   //   let test2 = Bookmark.find({ post_id: data._id }).select('user_id');
-  //   //   console.log(test2);
-  //   // }
-  //   for (let i in data) {
-  //     if (Bookmark.find({ post_id: data[i]._id }).exists()) {
-  //       console.log('true');
-  //     }
-  //   }
-  //   console.log(test2);
-  // });
-  console.log(result);
+    .limit(5)
+    .lean();
 
-  // console.log('new찍어보기', result);
-  // console.log('length?', result.length);
-  // const list = [];
-  // for (i = 0; (i = result.length); i++) {
-  //   const test2 = await Bookmark.find({ post_id: result });
-  // }
-  // const test = await Bookmark.find({ post_id: result._id }).select('user_id');
-  // console.log('test?', test);
+  for (let i in result) {
+    if (user != null) {
+      const state = await Bookmark.exists({
+        $and: [{ post_id: result[i]._id }, { user_id: user._id }],
+      });
+      result[i].bookmarkState = state;
+    } else {
+      result[i].bookmarkState = false;
+    }
+  }
 
   return result;
 };
 
-const findPostHot = async (lastId) => {
-  // const result = await Post.find(lastId ? { _id: { $lt: lastId } } : {})
-  //   .populate('writer', 'nickname profileImage')
-  //   .sort({ 'count.bookmark': -1 })
-  //   .limit(5);
-
+const findPostHot = async (lastId, user) => {
   let lastObjId;
   if (lastId) {
     lastObjId = await Post.findById({ _id: lastId });
-    console.log(lastObjId);
-    console.log('lastId의 카운트', lastObjId.count.bookmark);
   }
 
   const result = await Post.find(
@@ -106,7 +89,19 @@ const findPostHot = async (lastId) => {
   )
     .sort({ 'count.bookmark': -1, _id: -1 })
     .populate('writer', 'nickname profileImage')
-    .limit(5);
+    .limit(5)
+    .lean();
+
+  for (let i in result) {
+    if (user != null) {
+      const state = await Bookmark.exists({
+        $and: [{ post_id: result[i]._id }, { user_id: user._id }],
+      });
+      result[i].bookmarkState = state;
+    } else {
+      result[i].bookmarkState = false;
+    }
+  }
 
   return result;
 };
@@ -119,7 +114,7 @@ const countPost = async (category) => {
   return result;
 };
 
-const findPostsCategory = async (category, lastId) => {
+const findPostsCategory = async (category, lastId, user) => {
   const result = await Post.find(
     lastId
       ? { $and: [{ _id: { $lt: lastId } }, { categoryValue: category }] }
@@ -127,7 +122,20 @@ const findPostsCategory = async (category, lastId) => {
   )
     .sort({ _id: -1 })
     .populate('writer', 'nickname profileImage')
-    .limit(5);
+    .limit(5)
+    .lean();
+
+  for (let i in result) {
+    if (user != null) {
+      const state = await Bookmark.exists({
+        $and: [{ post_id: result[i]._id }, { user_id: user._id }],
+      });
+      result[i].bookmarkState = state;
+    } else {
+      result[i].bookmarkState = false;
+    }
+  }
+
   return result;
 };
 
@@ -136,11 +144,20 @@ const checkPostId = async (postId) => {
   return result;
 };
 
-const findDetailInfo = async (postId) => {
-  const result = await Post.findOne({ postId: postId }).populate(
-    'writer',
-    'nickname profileImage'
-  );
+const findDetailInfo = async (postId, user) => {
+  const result = await Post.findOne({ postId: postId })
+    .populate('writer', 'nickname profileImage')
+    .lean();
+
+  if (user != null) {
+    const state = await Bookmark.exists({
+      $and: [{ postId: postId }, { user_id: user._id }],
+    });
+    result.bookmarkState = state;
+  } else {
+    result.bookmarkState = false;
+  }
+
   return result;
 };
 
@@ -151,6 +168,7 @@ const checkPostWriter = async (postId) => {
 
 const removePost = async (postId) => {
   const result = await Post.findOneAndDelete({ postId: postId });
+  const removeBookmark = await Bookmark.deleteMany({ post_id: result._id });
   return result;
 };
 

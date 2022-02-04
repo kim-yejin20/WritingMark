@@ -38,7 +38,7 @@ const findPostTab = async (req, res) => {
     const ArrReturn = tabArray.includes(tab);
     if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
 
-    const result = await postService.findPostsTab(tab, lastId);
+    const result = await postService.findPostsTab(tab, lastId, req.user);
     const totalPostCount = await postService.countPost();
 
     if (result.length === 0) errorGenerator('게시글 없음', 400);
@@ -60,8 +60,6 @@ const findPostCategory = async (req, res) => {
     const category = req.query.categoryname;
     const { lastId } = req.query;
 
-    console.log(req.query);
-
     const cateArray = [
       'web-content',
       'essay',
@@ -73,10 +71,13 @@ const findPostCategory = async (req, res) => {
     const ArrReturn = cateArray.includes(category);
     if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
 
-    const result = await postService.findPostsCategory(category, lastId);
+    const result = await postService.findPostsCategory(
+      category,
+      lastId,
+      req.user
+    );
     const totalPostCount = await postService.countPost(category);
 
-    // console.log(result);
     res.status(200).json({
       status: 'success',
       count: totalPostCount,
@@ -97,7 +98,7 @@ const detailInfo = async (req, res) => {
     const checkPostId = await postService.checkPostId(postId);
     if (checkPostId == false)
       errorGenerator('잘못된 주소이거나, 비공개 또는 삭제된 글입니다', 400);
-    const result = await postService.findDetailInfo(postId);
+    const result = await postService.findDetailInfo(postId, req.user);
     res.status(200).json({
       status: 'success',
       result,

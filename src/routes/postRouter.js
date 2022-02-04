@@ -12,9 +12,9 @@ router.post(
   postController.createPost
 );
 
-router.get('', postController.findPostTab);
-router.get('/category', postController.findPostCategory);
-router.get('/:postId', postController.detailInfo);
+router.get('', validateToken, postController.findPostTab);
+router.get('/category', validateToken, postController.findPostCategory);
+router.get('/:postId', validateToken, postController.detailInfo);
 router.delete('/:postId', validateToken, postController.removePost);
 router.patch(
   '/:postId',
