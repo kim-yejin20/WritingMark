@@ -188,7 +188,7 @@ const findUserPost = async (req, res) => {
   try {
     if (req.user == null) errorGenerator('조회 권한 없음', 403);
     const { lastId } = req.query;
-    console.log(req.query);
+
     const about = 'post';
     const result = await userService.findUserPost(req.user, lastId);
     const postCount = await userService.countTotal(req.user, about);
@@ -314,12 +314,12 @@ const removeUserInfo = async (req, res) => {
   try {
     const userInfo = await userService.checkUserId(req.user._id);
 
-    const isSamePW = await bcrypt.comparePassword(
-      req.body.password,
-      userInfo.password
-    );
+    // const isSamePW = await bcrypt.comparePassword(
+    //   req.body.password,
+    //   userInfo.password
+    // );
 
-    if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
+    // if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
 
     const result = await userService.removeUserInfo(req.user);
     //서비스랑 DAO 작성하기

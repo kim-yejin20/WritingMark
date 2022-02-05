@@ -117,7 +117,6 @@ const findUserPost = async (user, lastId) => {
 };
 
 const countTotal = async (user, about) => {
-  console.log(about);
   if (about == 'post') {
     const result = await Post.find({ writer: user._id }).count();
     return result;
@@ -161,7 +160,6 @@ const findUserBookmark = async (user, lastId) => {
     .lean();
 
   for (let i in result) {
-    console.log(result[i]._id);
     result[i].bookmarkState = true;
   }
 
@@ -189,21 +187,23 @@ const checkBookmark = async (user_id, postId) => {
 };
 
 const removeUserInfo = async (user) => {
-  // 유저 정보 삭제
-  // const removeUser = await User.findByIdAndDelete({ _id: user._id }); // 테스트중이라 잠시 삭제
+  // 유저 정보 변경 (프로필 이미지 -> 기본 이미지 변경 / 이메일, 패스워드 -> 삭제, state -> inactive);
+  const removeUser = await User.findByIdAndUpdate(
+    { _id: user._id },
+    {
+      $unset: {
+        email: '',
+        password: '',
+        social_id: '',
+        social_platform: '',
+      },
+      profileImage: 'basicProfileImage.png',
+      state: 'inactive',
+    },
+    { new: true }
+  );
 
-  //유저가 북마크 한 글 배열에 담김
-  const removeBookmark = await Post.find({ userBookmark: { $in: user._id } });
-
-  //유저가 쓴 글 배열에 담김 -> 게시글, 댓글은 삭제 안하기로 했지
-  const removePost = await Post.find({ writer: user._id });
-
-  return removePost;
-
-  // return removeBookmark;
-
-  // 이거 다시 손 봐야함니다.
-  // return result;
+  return removeUser;
 };
 
 export default {

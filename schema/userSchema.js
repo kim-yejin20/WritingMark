@@ -12,9 +12,14 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
-    unique: true,
+    index: {
+      unique: true,
+      partialFilterExpression: { email: { $exists: true, $gt: '' } },
+    },
+    // unique: true,
     required: [true, 'Please enter email'],
-    set: toLower,
+    // sparse: true,
+    // set: toLower,
   },
   password: {
     type: String,
@@ -43,12 +48,6 @@ const userSchema = new Schema({
     enum: ['active', 'inactive'],
     default: 'active',
   },
-  // bookmarkPost: [
-  //   {
-  //     type: mongoose.Types.ObjectId,
-  //     ref: 'Post',
-  //   },
-  // ],
 });
 
 function toLower(email) {

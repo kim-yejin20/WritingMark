@@ -45,6 +45,6 @@ router.delete(
 router.get('/bookmarks', validateToken, userController.findUserBookmark);
 
 // 회원탈퇴 로직 다시 작성필요
-router.post('/withdrawal', validateToken, userController.removeUserInfo);
+router.get('/withdrawal', validateToken, userController.removeUserInfo);
 
 export default router;

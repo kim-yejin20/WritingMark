@@ -129,6 +129,24 @@ const checkBookmark = async (user_id, postId) => {
 
 const removeUserInfo = async (user) => {
   const result = await userDAO.removeUserInfo(user);
+  const user_profile = user.profileImage;
+  //기본 프로필 이미지로 변경 후 프로필 이미지 삭제
+
+  if (user.profileImage != 'basicProfileImage.png') {
+    s3.deleteObject(
+      {
+        Bucket: 'writingmark',
+        Key: `user/${user_profile}`,
+      },
+      (err, data) => {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log('기본 이미지로 변경// 이전 프로필 삭제');
+      }
+    );
+  }
   return result;
 };
 
