@@ -107,7 +107,6 @@ const findPostHot = async (lastId, user) => {
 };
 
 const countPost = async (category) => {
-  // const result = await Post.count();
   const result = await Post.find(
     category ? { categoryValue: category } : {}
   ).count();

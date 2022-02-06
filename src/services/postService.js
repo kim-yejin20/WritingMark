@@ -82,7 +82,7 @@ const updatePost = async (postId, data) => {
   const checkPostImg = await postDAO.checkPostImg(postId);
 
   if (data.info_image == checkPostImg.image.info_image) {
-    // 이미지 변경 없음
+    //이미지 변경 없음
     const result = await postDAO.updatePostKeep(postId, data);
     return result;
   }
