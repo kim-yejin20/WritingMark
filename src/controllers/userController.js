@@ -245,8 +245,6 @@ const createUserBookmark = async (req, res) => {
 
     //해당 게시글에 유저가 북마크 했는지 확인
     const checkBookmark = await userService.checkBookmark(req.user, postId);
-    console.log('here~!');
-    console.log(checkBookmark);
 
     if (checkBookmark == true) errorGenerator('이미 북마크 한 글입니다.', 400);
     const result = await userService.createUserBookmark(req.user, postId);
@@ -314,16 +312,15 @@ const removeUserInfo = async (req, res) => {
   try {
     const userInfo = await userService.checkUserId(req.user._id);
 
-    // const isSamePW = await bcrypt.comparePassword(
-    //   req.body.password,
-    //   userInfo.password
-    // );
+    const isSamePW = await bcrypt.comparePassword(
+      req.body.password,
+      userInfo.password
+    );
 
-    // if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
+    if (isSamePW == false) errorGenerator('틀린 비밀번호입니다.', 401);
 
     const result = await userService.removeUserInfo(req.user);
-    //서비스랑 DAO 작성하기
-    console.log(result);
+
     res.status(200).json({
       status: 'success',
     });
