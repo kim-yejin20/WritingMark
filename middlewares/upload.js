@@ -22,14 +22,8 @@ const storage = multerS3({
 export const upload = multer({
   storage,
   fileFilter: async (req, file, cb) => {
-    // console.log(req);
-    console.log(req.body);
-    console.log(req.file);
-    console.log(file);
     if (file.fieldname == 'user_profile') {
       const checkTest = await checkDuplicate(req);
-      // console.log('ㅊ첵첵', checkTest);
-      console.log('!!!!!!!!!!!!', file);
       if (checkTest == null) cb(null, true);
       if (req.ValidationError) return cb(null, false);
       // if (req.ValidationError) cb(null, false);

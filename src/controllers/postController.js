@@ -3,6 +3,13 @@ import { postService } from '../services';
 import { errorGenerator } from '../utils';
 import { s3 } from '../utils/aws';
 
+const test = (req, res) => {
+  // res.status(200).json({
+  //   message: 'hi',
+  // });
+  res.send('도커용 테스트');
+};
+
 const createPost = async (req, res) => {
   try {
     const user = req.user;
@@ -176,6 +183,7 @@ const updatePost = async (req, res) => {
 };
 
 export default {
+  test,
   createPost,
   findPostTab,
   findPostCategory,
