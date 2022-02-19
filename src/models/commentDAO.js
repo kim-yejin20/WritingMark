@@ -1,6 +1,6 @@
 import Comment from '../../schema/commentSchema';
 import Post from '../../schema/postSchema';
-import moment from '../utils/moment';
+import moment from 'moment';
 
 const createComment = async (user, postId, content) => {
   const postObj = await Post.findOneAndUpdate(
@@ -16,7 +16,7 @@ const createComment = async (user, postId, content) => {
     post_id: post_id,
     writer: user._id,
     content: content,
-    createdAt: moment.localTime,
+    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
   }).save();
 
   const result = await Comment.findById({ _id: addComment._id }).populate(

@@ -19,7 +19,15 @@ app.use(express.urlencoded({ extended: false }));
 // };
 
 // app.use(cors(corsOptions));
-app.use(cors()); //모든 라우터에 cors()적용
+// app.use(cors()); //모든 라우터에 cors()적용
+
+app.use(
+  cors({
+    origin: ['https://writingmark.netlify.app'],
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(router);
 app.use(morgan('dev'));
 

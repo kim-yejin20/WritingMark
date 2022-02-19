@@ -1,6 +1,6 @@
 import User from '../../schema/userSchema';
 import mongoose from 'mongoose';
-import moment from '../utils/moment';
+import moment from 'moment';
 import Post from '../../schema/postSchema';
 import Bookmark from '../../schema/bookmarkSchema';
 
@@ -78,7 +78,7 @@ const createUser = async (reqData) => {
     nickname: reqData.nickname,
     email: reqData.email,
     password: reqData.password,
-    createdAt: moment.localTime,
+    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
     profileImage: 'basicProfileImage.png',
   }).save();
   return result;
@@ -90,7 +90,7 @@ const createSocialUser = async (email, randomName, kakaoId, platform) => {
     email: email,
     social_id: kakaoId,
     social_platform: platform,
-    createdAt: moment.localTime,
+    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
     profileImage: 'basicProfileImage.png',
   }).save();
   return result;
@@ -139,7 +139,7 @@ const createUserBookmark = async (userId, postId) => {
     post_id: post._id,
     postId: postId,
     user_id: userId._id,
-    createdAt: moment.localTime,
+    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
   }).save();
 
   return result;

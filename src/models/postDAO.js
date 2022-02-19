@@ -1,7 +1,7 @@
 import Bookmark from '../../schema/bookmarkSchema';
 import Post from '../../schema/postSchema';
 import TotalCount from '../../schema/totalcountSchema';
-import moment from '../utils/moment';
+import moment from 'moment';
 
 const createPost = async (user, data) => {
   const getCount = await TotalCount.findOne({
@@ -14,7 +14,7 @@ const createPost = async (user, data) => {
     categoryValue: data.category_value,
     categoryLabel: data.category_label,
     content: data.content,
-    createdAt: moment.localTime,
+    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
     info_title: data.info_title,
     info_url: data.info_url,
   }).save();
@@ -33,7 +33,7 @@ const createPostWithImg = async (user, data, file) => {
     categoryValue: data.category_value,
     categoryLabel: data.category_label,
     content: data.content,
-    createdAt: moment.localTime,
+    createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
     info_title: data.info_title,
     info_url: data.info_url,
     image: {
@@ -183,7 +183,7 @@ const updatePostWithImg = async (postId, data, file) => {
       categoryValue: data.category_value,
       categoryLabel: data.category_label,
       content: data.content,
-      createdAt: moment.localTime,
+      createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       info_title: data.info_title,
       info_url: data.info_url,
       image: {
@@ -202,7 +202,7 @@ const updatePostKeep = async (postId, data) => {
       categoryValue: data.category_value,
       categoryLabel: data.category_label,
       content: data.content,
-      createdAt: moment.localTime,
+      createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       info_title: data.info_title,
       info_url: data.info_url,
     }
@@ -217,7 +217,7 @@ const updatePostRemove = async (postId, data) => {
       categoryValue: data.category_value,
       categoryLabel: data.category_label,
       content: data.content,
-      createdAt: moment.localTime,
+      createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       info_title: data.info_title,
       info_url: data.info_url,
       $unset: { image: '' },
