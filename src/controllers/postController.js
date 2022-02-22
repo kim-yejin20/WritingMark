@@ -3,13 +3,6 @@ import { postService } from '../services';
 import { errorGenerator } from '../utils';
 import { s3 } from '../utils/aws';
 
-const test = (req, res) => {
-  // res.status(200).json({
-  //   message: 'hi',
-  // });
-  res.send('도커용 테스트');
-};
-
 const createPost = async (req, res) => {
   try {
     const user = req.user;
@@ -73,7 +66,7 @@ const findPostCategory = async (req, res) => {
       'novel',
       'poetry',
       'knowledge',
-      'etc',
+      'media',
     ];
     const ArrReturn = cateArray.includes(category);
     if (ArrReturn == false) errorGenerator('페이지를 찾을 수 없습니다', 400);
@@ -183,7 +176,6 @@ const updatePost = async (req, res) => {
 };
 
 export default {
-  test,
   createPost,
   findPostTab,
   findPostCategory,

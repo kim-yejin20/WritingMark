@@ -5,8 +5,6 @@ import { validateToken } from '../../middlewares/validateToken';
 
 const router = express.Router();
 
-router.get('/test', postController.test);
-
 router.post(
   '',
   validateToken,
