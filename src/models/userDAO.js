@@ -148,7 +148,7 @@ const createUserBookmark = async (userId, postId) => {
 const findUserBookmark = async (user, lastId) => {
   const result = await Bookmark.find(
     lastId
-      ? { $and: [{ _id: { $lt: lastId } }, { userBookmark: user._id }] }
+      ? { $and: [{ _id: { $lt: lastId } }, { user_id: user._id }] }
       : { user_id: user._id }
   )
     .sort({ _id: -1 })
