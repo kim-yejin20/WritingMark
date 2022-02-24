@@ -127,20 +127,28 @@ const countTotal = async (user, about) => {
 };
 
 const createUserBookmark = async (userId, postId) => {
-  const post = await Post.findOneAndUpdate(
-    {
-      postId: postId,
-    },
-    { $inc: { 'count.bookmark': 1 } },
-    { new: true }
-  );
+  const post_id = await Post.findOne({ postId: postId }).exec();
 
   const result = await new Bookmark({
-    post_id: post._id,
+    post_id: post_id,
     postId: postId,
     user_id: userId._id,
     createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
   }).save();
+
+  console.log('북마크 하기 result', result);
+
+  if (result != null) {
+    const post = await Post.findOneAndUpdate(
+      {
+        postId: postId,
+      },
+      { $inc: { 'count.bookmark': 1 } },
+      { new: true }
+    ).exec();
+
+    console.log('북마크 취소후 count +1', post);
+  }
 
   return result;
 };
@@ -167,14 +175,23 @@ const findUserBookmark = async (user, lastId) => {
 };
 
 const removeUserBookmark = async (userId, postId) => {
-  const post = await Post.findOneAndUpdate(
-    {
-      postId: postId,
-    },
-    { $inc: { 'count.bookmark': -1 } },
-    { new: true }
-  );
-  const result = await Bookmark.findOneAndRemove({ postId: postId });
+  const result = await Bookmark.findOneAndDelete({
+    $and: [{ postId: postId }, { user_id: userId._id }],
+  }).exec();
+
+  console.log('북마크 취소 result', result);
+
+  if (result != null) {
+    const post = await Post.findOneAndUpdate(
+      {
+        postId: postId,
+      },
+      { $inc: { 'count.bookmark': -1 } },
+      { new: true }
+    ).exec();
+
+    console.log('북마크 취소후 count -1', post);
+  }
 
   return result;
 };
